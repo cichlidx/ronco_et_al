@@ -17,6 +17,6 @@ Coalescent simulations on the basis of the Lake Tanganyika species tree allowing
 
 Phenotypic analyses and phylogenetic comparative analyses of trait evolution.
 The directory [`trait_evolution/02_Morpho_Eco/scripts`](trait_evolution/02_Morpho_Eco/scripts) contains scripts for the geometric morphometric analyses and phenotype environment correlations. The complete analysis can be run by executing the script [`00_run_all.sh`](trait_evolution/02_Morpho_Eco/scripts/00_run_all.sh).
-The directory [`trait_evolution/03_TraitEvolution/scripts`](trait_evolution/03_TraitEvolution/scripts) contains scripts for the analyses of trait evolution. The complete analysis can be run by executing the script [`00_run_all.sh`](trait_evolution/03_TraitEvolution/scripts/00_run_all.sh).
+The directory [`trait_evolution/03_TraitEvolution/scripts`](trait_evolution/03_TraitEvolution/scripts) contains scripts for the phylogenetic comparative analyses of trait evolution. The complete analysis can be run by executing the script [`00_run_all.sh`](trait_evolution/03_TraitEvolution/scripts/00_run_all.sh).
 
 
