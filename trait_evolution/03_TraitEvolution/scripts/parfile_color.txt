@@ -1,0 +1,11 @@
+7
+2
+VR
+LF ./run
+Prior Alpha-1 Uniform 0 10
+Prior Sigma-1 Uniform 0 10
+Burnin 10000000
+Iterations 1000000000
+Sample 100000
+Cores 1
+run

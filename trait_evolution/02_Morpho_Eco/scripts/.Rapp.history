@@ -1,0 +1,378 @@
+dim(genoms)
+dim(genome)
+length(unique(fulllist$Tribe))
+length(unique(fulllist$SpecieID))
+length(unique(fulllist$SpeciesID))
+d= read.table("~/Documents/Science/Projects/CichlidX/final_stats_for_MS/crosscheck_datasets/species_from_tabele1.txt", h=T)
+head(d)
+dim(genome)
+head(fulllist)
+d[! d$Species %in% fulllist$SpeciesID,]
+fulllist[! fulllist$SpeciesID  %in% d$Species,]
+tmp = aggregate(fulllist[,1], list(fulllist$SpeciesID) , length)
+head(tmp)
+head(d)
+tmp3 = merge(tmp, d, all=T, by.x="Group.1", by.y="Species")
+head(tmp3)
+tmp3[tmp3$x != tmp3$Total.specimens,]
+d= read.table("~/Documents/Science/Projects/CichlidX/final_stats_for_MS/crosscheck_datasets/species_from_tabele1.txt", h=T)#
+head(d)#
+dim(genome)#
+head(fulllist)#
+d[! d$Species %in% fulllist$SpeciesID,]#
+#
+fulllist[! fulllist$SpeciesID  %in% d$Species,]#
+#
+tmp = aggregate(fulllist[,1], list(fulllist$SpeciesID) , length)#
+#
+head(tmp)#
+head(d)#
+#
+tmp3 = merge(tmp, d, all=T, by.x="Group.1", by.y="Species")#
+head(tmp3)#
+#
+tmp3[tmp3$x != tmp3$Total.specimens,]
+head(SI)
+head(body)
+head(bodyID)
+head(IDbody)
+dim(genome)
+head(genome)
+head(SI)
+head(IDbody)
+head(genome)
+head(LPJ)
+head(names1)
+head(SI)
+head(genome)
+head(names2)
+names2$sp = substr(names2$rest, 7,12)
+head(names2)
+head(SI)
+head(fillits)
+head(fulllits)
+head(fulllist)
+head(SI)
+SI2= merge( SI, fulllist[,c(1,3)], all=T )
+head(SI2)
+SI2[is.na(SI2$SpeciesID),]
+cop= read.csv("~/Documents/Science/Projects/CichlidX/final_stats_for_MS/Upload_Github/01_Data/scores_pigmentation_pattern.csv", h=T)
+head(cop)
+colp2= merge( cop[,1], fulllist[,c(1,3)], all=T )
+colp2[is.na(colp2$SpeciesID),]
+head(SI)
+head(fulllist)
+head(colp2)
+head(cop)
+head(fulllist)
+colp2= merge( cop[,1:2], fulllist[,c(1,3)], all=T )
+head(colp2)
+cop[!cop$IC %in% fulllist$ID,]
+head(SI2)
+head(names1)
+head(SI2)
+head(names1)
+names(names1)
+names(names1)[3] ="body"
+head(names1)
+head(SI2)
+SI2$d13C=NULL
+head(SI2)
+tmp1= merge( SI2, names1, all.x=T, all.y=T)
+head(tmp1)
+head(LPJ)
+head(names2)
+names(names2)[3] ="LPJ"
+names(names2)[2] ="species"
+head(names2)
+tmp2= merge( tmp1, LPJ, all.x=T, all.y=T)
+dim(tmp2)
+head(tmp1)
+head(names2)
+tmp2= merge( tmp1, names2, all.x=T, all.y=T)
+head(tmp2)
+dim(tmp2)
+head(tmp2)
+head(genome)
+names(genome)[1] = "ID"
+tmp3= merge( tmp2, genome, all.x=T, all.y=T)
+head(tmp3)
+head(tmp1)
+head(names2)
+head(tmp2)
+head(genome)
+names(genome)[2] = "genome"
+tmp3= merge( tmp2, genome, all.x=T, all.y=T)
+head(tmp3)
+length(tmp3$ID)
+dups= tmp3[duplicated(tmp3$ID),1]
+dups
+tmp3[tmp3$ID %in% dups,]
+head(tmp3)
+dim(tmp3)
+tmp3[is.na( tmp3$ID),]
+tmp3[is.na( tmp3$species),]
+head(tmp3)
+tmp3$genome = as.character(tmp3$genome)
+tmp3$genome[! is.na( tmp3$genome)] = "y"
+head(tmp3)
+tmp3$genome[ is.na( tmp3$genome)] = "n"
+head(tmp3)
+tmp3$Specie=NULL
+tmp3$Species=NULL
+head(tmp3)
+tmp3$LPJ = as.character(tmp3$LPJ)#
+tmp3$LPJ[! is.na( tmp3$LPJ)] = "y"#
+tmp3$LPJ[ is.na( tmp3$LPJ)] = "n"
+head(tmp3)
+tmp3$species=NULL
+head(tmp3)
+tmp3$body = as.character(tmp3$body)#
+tmp3$body[! is.na( tmp3$body)] = "y"#
+tmp3$body[ is.na( tmp3$body)] = "n"
+head(tmp3)
+tmp3$sp=NULL
+head(tmp3)
+tmp3$d15N = as.character(tmp3$d15N)#
+tmp3$d15N[! is.na( tmp3$d15N)] = "y"#
+tmp3$d15N[ is.na( tmp3$d15N)] = "n"
+head(tmp3)
+tmp3[is.ns(tmp3$SpeciesID),]
+tmp3[is.na(tmp3$SpeciesID),]
+head(tmp3)
+head(colp2)
+tmp4 = merge( tmp3,colp2[,1:2] , all.x=T, all.y=T)
+head(tmp4)
+dim(tmp4)
+tmp4 $DLS = as.character(tmp4 $DLS)
+tmp4 $DLS[! is.na( tmp4 $DLS)] = "y"
+tmp4 $DLS[ is.na( tmp4 $DLS)] = "n"
+head(tmp4)
+entire_dataset= aggregate( tmp3$ID ,list(tmp3$species), length)
+tmp3= tmp4
+entire_dataset= aggregate( tmp3$ID ,list(tmp3$species), length)
+head(tmp3)
+entire_dataset= aggregate( tmp3$ID ,list(tmp3$SpeciesID), length)
+entire_dataset
+head(tmp3)
+tmp3$d15N[tmp3$d15N == "n"]
+tmp3$d15N[tmp3$d15N == "n"] =NA
+head(tmp3)
+tmp3$d15N[tmp3$d15N == "n"] =NA#
+tmp3$body[tmp3$body == "n"] =NA#
+tmp3$LPJ[tmp3$LPJ == "n"] =NA#
+tmp3$genome[tmp3$genome == "n"] =NA#
+tmp3$DLS[tmp3$DLS == "n"] =NA
+head(tmp3)
+entire_dataset= aggregate( tmp3$ID ,list(tmp3$SpeciesID), length)
+head(tmp3)
+names(tmp3)
+names(tmp3)[3]
+names(tmp3)[3] ="species"
+entire_dataset= aggregate( tmp3$ID ,list(tmp3$species), length)
+genome_dataset= aggregate(tmp3[ !is.na( tmp3$genome),] $ID ,list(tmp3[ !is.na( tmp3$genome),]$species), length)
+LPJ_dataset= aggregate(tmp3[ !is.na( tmp3$Csize_LPJ),] $ID ,list(tmp3[ !is.na( tmp3$Csize_LPJ),]$species), length)
+LPJ_dataset= aggregate(tmp3[ !is.na( tmp3$LPJ),] $ID ,list(tmp3[ !is.na( tmp3$LPJ),]$species), length)
+body_dataset= aggregate(tmp3[ !is.na( tmp3$body),] $ID ,list(tmp3[ !is.na( tmp3$body),]$species), length)
+SI_dataset= aggregate(tmp3[ !is.na( tmp3$d15N),] $ID ,list(tmp3[ !is.na( tmp3$d15N),]$species), length)
+names( entire_dataset) = c("species", "all")#
+names( genome_dataset) = c("species", "genome")#
+names( LPJ_dataset) = c("species", "LPJ")#
+names( body_dataset) = c("species", "body")#
+names( SI_dataset) = c("species", "SI")
+t1= merge( entire_dataset, genome_dataset , all.x=T, all.y=T)
+t2= merge(LPJ_dataset, body_dataset , all.x=T, all.y=T)
+t3= merge( t1, t2,  all.x=T, all.y=T)
+tall= merge( t3, SI_dataset, all.x=T, all.y=T)
+head(tall)
+tmp3=tmp4
+head(tmp3)
+private_genome= tmp3[tmp3$genome=="y" & tmp3$d15N =="n" & tmp3$body=="n" & tmp3$LPJ=="n" & tmp3$DLS=="n",]
+private_genome
+tgen= aggregate( private_genome[,1], list( private_genome$species), length)
+names( tgen) = c("species", "genome_only")
+tall2= merge( tall, tgen, all.x=T, all.y=T)
+private_genome= tmp3[tmp3$genome=="y" & tmp3$d15N =="n" & tmp3$body=="n" & tmp3$LPJ=="n" & tmp3$DLS=="n",]
+head(private_genome)
+tgen= aggregate( private_genome[,1], list( private_genome$SpeciesID), length)
+names( tgen) = c("species", "genome_only")
+tall2= merge( tall, tgen, all.x=T, all.y=T)
+head(tall2)
+private_LPJ= tmp3[tmp3$LPJ=="y" & tmp3$d15N=="n" & tmp3$body=="n" & tmp3$genome=="n" & tmp3$DLS=="n",]
+private_LPJ
+head(tmp3)
+private_body= tmp3[tmp3$body=="y" & tmp3$d15N=="n" & tmp3$LPJ=="n" & tmp3$genome=="n"& tmp3$DLS=="n",]
+private_body
+head(tmp3)
+private_color= tmp3[tmp3$DLS=="y" & tmp3$d15N=="n" & tmp3$LPJ=="n" & tmp3$genome=="n"& tmp3$body=="n",]
+private_color
+head(private_body)
+tgen2= aggregate( private_body[,1], list( private_body $SpeciesID), length)
+names( tgen) = c("species", "body_only")
+names( tgen) = c("species", "genome_only")
+tall3= merge( tall2, tgen2, all.x=T, all.y=T)
+head(tall3)
+head(private_body)
+tgen2
+names( tgen2) = c("species", "body_only")
+tgen2
+head(tall2)
+tall3= merge( tall2, tgen2, all.x=T, all.y=T)
+head(tall3)
+head(tmp3)
+private_color= tmp3[tmp3$DLS=="y" & tmp3$d15N=="n" & tmp3$LPJ=="n" & tmp3$genome=="n"& tmp3$body=="n",]
+private_color
+head(d)
+head(tall3)
+tall4 = tall3[match(d$Species, tall3$species),]
+head(tall4)
+private_SI= tmp3[tmp3$d15N=="y" & tmp3$DLS=="n" & tmp3$LPJ=="n" & tmp3$genome=="n"& tmp3$body=="n",]
+private_SI
+head(private_SI)
+tgen3= aggregate( private_SI[,1], list( private_SI $SpeciesID), length)
+tgen3
+names( tgen3) = c("species", "SI_only")
+dim(tgen3)
+tall4= merge( tall3, tgen3, all.x=T, all.y=T)
+head(tall4)
+head(d)
+head(tall4)
+tall5 = tall4[match(d$Species, tall4$species),]
+head(tall5)
+write.csv(tall5, "~/Documents/Science/Projects/CichlidX/manuscript/Revision_1/extended_data/NEWaddtoTable_1.csv", quote=F, row.names=F)
+head(tall5)
+tmp3= tmp4#
+head(tmp3)#
+#
+tmp3$d15N[tmp3$d15N == "n"] =NA#
+tmp3$body[tmp3$body == "n"] =NA#
+tmp3$LPJ[tmp3$LPJ == "n"] =NA#
+tmp3$genome[tmp3$genome == "n"] =NA#
+tmp3$DLS[tmp3$DLS == "n"] =NA#
+names(tmp3)[3] ="species"
+entire_dataset= aggregate( tmp3$ID ,list(tmp3$species), length)#
+genome_dataset= aggregate(tmp3[ !is.na( tmp3$genome),] $ID ,list(tmp3[ !is.na( tmp3$genome),]$species), length)#
+LPJ_dataset= aggregate(tmp3[ !is.na( tmp3$LPJ),] $ID ,list(tmp3[ !is.na( tmp3$LPJ),]$species), length)#
+body_dataset= aggregate(tmp3[ !is.na( tmp3$body),] $ID ,list(tmp3[ !is.na( tmp3$body),]$species), length)#
+SI_dataset= aggregate(tmp3[ !is.na( tmp3$d15N),] $ID ,list(tmp3[ !is.na( tmp3$d15N),]$species), length)#
+color_dataset= aggregate(tmp3[ !is.na( tmp3$DLS),] $ID ,list(tmp3[ !is.na( tmp3$DLS),]$species), length)
+names( color_dataset) = c("species", "SI")
+names( entire_dataset) = c("species", "all")#
+names( genome_dataset) = c("species", "genome")#
+names( LPJ_dataset) = c("species", "LPJ")#
+names( body_dataset) = c("species", "body")#
+names( SI_dataset) = c("species", "SI")
+names( color_dataset) = c("species", "color")
+t1= merge( entire_dataset, genome_dataset , all.x=T, all.y=T)
+t2= merge(LPJ_dataset, body_dataset , all.x=T, all.y=T)
+t3= merge( t1, t2,  all.x=T, all.y=T)
+t4= merge( t3, color_dataset,  all.x=T, all.y=T)
+tall= merge( t4, SI_dataset, all.x=T, all.y=T)
+head(tall)
+tmp3=tmp4
+head(tmp3)
+private_genome= tmp3[tmp3$genome=="y" & tmp3$d15N =="n" & tmp3$body=="n" & tmp3$LPJ=="n" & tmp3$DLS=="n",]#
+head(private_genome)#
+tgen= aggregate( private_genome[,1], list( private_genome$SpeciesID), length)#
+names( tgen) = c("species", "genome_only")#
+#
+tall2= merge( tall, tgen, all.x=T, all.y=T)#
+head(tall2)
+####  find the ind. where only a LPJ exist#
+private_LPJ= tmp3[tmp3$LPJ=="y" & tmp3$d15N=="n" & tmp3$body=="n" & tmp3$genome=="n" & tmp3$DLS=="n",]
+###  no private LPJ #
+####  find the ind. where only a body exist#
+head(tmp3)#
+#
+private_body= tmp3[tmp3$body=="y" & tmp3$d15N=="n" & tmp3$LPJ=="n" & tmp3$genome=="n"& tmp3$DLS=="n",]#
+#
+head(private_body)#
+tgen2= aggregate( private_body[,1], list( private_body $SpeciesID), length)#
+names( tgen2) = c("species", "body_only")#
+#
+tall3= merge( tall2, tgen2, all.x=T, all.y=T)#
+head(tall3)#
+#
+####  find the ind. where only a color pattern exist#
+head(tmp3)#
+#
+private_color= tmp3[tmp3$DLS=="y" & tmp3$d15N=="n" & tmp3$LPJ=="n" & tmp3$genome=="n"& tmp3$body=="n",]#
+##. no private color#
+###  find the ind. where only a SI exist#
+head(tmp3)#
+#
+private_SI= tmp3[tmp3$d15N=="y" & tmp3$DLS=="n" & tmp3$LPJ=="n" & tmp3$genome=="n"& tmp3$body=="n",]#
+head(private_SI)#
+tgen3= aggregate( private_SI[,1], list( private_SI $SpeciesID), length)#
+names( tgen3) = c("species", "SI_only")#
+#
+tall4= merge( tall3, tgen3, all.x=T, all.y=T)#
+head(tall4)
+head(d)#
+head(tall4)
+tall5 = tall4[match(d$Species, tall4$species),]#
+head(tall5)
+write.csv(tall5, "~/Documents/Science/Projects/CichlidX/manuscript/Revision_1/extended_data/NEWaddtoTable_1.csv", quote=F, row.names=F)
+genomes2 = read.csv("~/Documents/Science/Projects/CichlidX/final_stats_for_MS/crosscheck_datasets/genomes_sequenced.csv", h=T)
+head(genomes2)
+NCBI = read.csv("~/Documents/Science/Projects/CichlidX/manuscript/version2/NCBI/BioSampleObjects.csv", h=T)
+head(NCBI)
+all(NCBI $Sample.Name == NCBI $SPUID)
+NCBI[NCBI $SPUID %in% genomes2$DNATubeID,]
+NCBI[NCBI $SPUID %in% genomes2$DNATubeID,1:5]
+NCBI! [NCBI $SPUID %in% genomes2$DNATubeID,1:5]
+NCBI[ ! NCBI$SPUID %in% genomes2$DNATubeID,1:5]
+#########################################################################
+#######   requried packages  ############################################
+#########################################################################
+require(geomorph)	## version 3.0.7#
+require(caper)		## version 1.0.1#
+require(ape)		## version 5.3
+load("../body/sp_means_body.Rdata")#
+load("../SI/sp_means_SI.Rdata")
+####  make the data sets congruent#
+#########################################################################
+#
+###  keep only SI data which is in morpho data#
+SI= sp_means_SI[sp_means_SI$sp %in%  dimnames(sp_means_body)[[3]],]#
+#
+###  keep only morpho data which is in SI data#
+body= sp_means_body[,, dimnames(sp_means_body)[[3]] %in% SI$sp ]
+#################################################
+######  prune tree to data#
+#################################################
+#
+######   get tree and drop tips#
+tree= read.nexus(file="../../01_Data/b1.tre")#
+tree2 = drop.tip(tree, tree$tip.label[! tree$tip.label %in% dimnames(body)[[3]]], root.edge = F, rooted = is.rooted(tree))#
+#
+############  drop morho/Si data not present in the tree..#
+body= body[,, dimnames(body)[[3]] %in% tree2$tip.label]#
+SI= SI[SI$sp %in% tree2$tip.label, ]#
+###  make SI matrix#
+#head(SI)#
+si= as.matrix( SI[,2:3])#
+rownames(si) = SI$sp#
+#head(si)#
+#
+###  bring them in correct oreder#
+si_ord = si[match(   dimnames(body)[[3]], rownames( si)),]#
+#unique(match(  dimnames(body)[[3]], rownames( si_ord)) == 1: length( dimnames(body)[[3]]))#
+#####################  add tribe classifiers
+info= read.csv ("../../01_Data/Species_TO_tribe.csv")#
+info$tribe = substr(tolower(info$Tribe),1,5)#
+#
+#head(info)#
+#head(dimnames(body)[[3]])#
+sp = data.frame("Species.ID" = dimnames(body)[[3]])#
+tribe= merge( sp, info, all.x=T, sort=F) [,c(1,4)]#
+#head(tribe)#
+#tribe[is.na( tribe$tribe),]#
+#unique(match( tribe$Species.ID, sp[,1]) == 1: length( sp[,1]))#
+#
+#str(tribe)#
+tribe$tribe= as.factor(tribe$tribe)
+f = two.b.pls(  si_ord, body)
+str(f)
+? two.b.pls
+f$svd

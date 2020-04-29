@@ -13,3 +13,9 @@ The included R script [`f4-ratio_downstreamAnalyses.R`](f4-ratio_analyses/f4-rat
 
 Coalescent simulations on the basis of the Lake Tanganyika species tree allowing various levels of within-tribe migration. The complete analysis can be run by executing the script [`run_all.sh`](heterozygosity_simulations/src/run_all.sh) in directory [`heterozygosity_simulations/src`](heterozygosity_simulations/src).
 
+## Phenotypic analyses and phylogenetic comparative analyses of trait evolution
+Complete workflow of the analyses of phenotypic data. 
+The directory [`trait_evolution/02_Morpho_Eco/scripts`](trait_evolution/02_Morpho_Eco/scripts) contains scripts for the geometric morphometric analyses and phenotype environment correlations. The complete analysis can be run by executing the script [`run_all.sh`](trait_evolution/02_Morpho_Eco/scripts/run_all.sh).
+The directory [`trait_evolution/03_TraitEvolution/scripts`](trait_evolution/03_TraitEvolution/scripts) contains scripts for the analyses of trait evolution. The complete analysis can be run by executing the script [`run_all.sh`](trait_evolution/03_TraitEvolution/scripts/run_all.sh).
+
+

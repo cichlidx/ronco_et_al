@@ -1,0 +1,38 @@
+##############################
+##############################
+Description of Input files
+##############################
+##############################
+
+
+########################
+### Phenotype files:
+
+all_bodyshape.tps # TPS files containing Landmark data derived from 2D x-rays (body shape including upper oral jaw), datasets were previously checked for outliers (e.g. swapped or missing landmarks); no Landmarks are missing (negative landmarks are actual coordinates)
+
+all_LPJ.tps # TPS files containing Landmark data derived from 3D CT-scans (lower pharyngeal jaw), datasets were previously checked for outliers (e.g. swapped or missing landmarks); no Landmarks are missing
+
+baseline.csv ### contains Baseline stable isotope data (d15N and d13C) from the northern and southern basin of Lake Tanganyika
+SI_data.csv ### contains stable isotope data (d15N and d13C) from cichlids of Lake Tanganyika
+SI_data_n_s_distribution.csv ### contains stable isotope data (d15N and d13C) from 19 cichlid species of Lake Tanganyika with a like-wide distribution, which we sampled at different sampling localities (n = north; s= south), this file mostly constitutes a subset of “SI_data.csv”, however for 2 species (“Lepatt” and “Benhor”) additional samples are provided
+
+scores_pigmentation_pattern.csv ### scored pigmentation pattern for all species 
+
+
+########################
+### Tree files:
+
+b1.tre 	## time-calibrated species tree based on the maximum-likelihood topology estimated with RAxML
+b2.tre  ## time-calibrated species tree based on the the topology estimated with ASTRAL
+b3.tre  ## time-calibrated species tree based on the topology estimated with SNAPP
+
+
+########################
+### files containing additional information:
+
+specimen_voucher_key.csv. ### translation table for the specimen voucher IDs, including species abbreviations, full species names, and sampling locations with GPS coordinates
+Species_TO_tribe.csv #### a table which links the six-letter species code to tribe information
+colors_tribes.txt ### Colour code table to assign tribe colours for plotting
+
+
+

@@ -1,0 +1,2478 @@
+out3=NULL#
+for ( k in 1: length(v2)){#
+        tmp3= unlist(Yt[[k]])#
+        tmp3.2= data.frame(tmp3, "sample" = v2[k])#
+        out3= rbind(out3, tmp3.2)#
+}
+out4=out3[,c(1,3)]#
+#head(out4)#
+#
+######## save to file#
+write.table(out4,paste(dirname,  "EBAncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), row.names=F, quote=F, sep="\t" )
+d= read.table(paste(dirname,"BEAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)
+d$sample2 = as.factor(d$sample)
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}
+statsOtime= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+statsOtime[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(statsOtime)="time"
+#########  ----------------------------------- get range from each timeslice:#
+minv= aggregate( d[,1], list(d$sample2), min)#
+maxv= aggregate( d[,1], list(d$sample2), max)#
+### range of the axes#
+statsOtime$range= abs(minv[,-1]-maxv[,-1])#
+##############################################
+######################  --------------------- get number of linegaes per timeslice#
+count_per_bin= aggregate( d[,1], list(d$sample2), length )#
+## combine and remove the first row = root value as diversity= 0#
+statsOtime$numLineages = count_per_bin[,2]
+###########################################################################################
+#
+numsim=500#
+BM_raw=read.table( paste(dirname, "Anc_states_BMnullModel","_", numsim, "sim", "_", TRAIT, "_", AXES, ".txt" ,sep=""),h=T)
+#####  prepare output for the mean values#
+mean_statsBM= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+mean_statsBM[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(mean_statsBM)="time"
+each iteration#
+rangeSim = aggregate( BM_raw[,2: (numsim+1)], list(d$sample2), function(x) abs(diff(range(x))))#
+mean_statsBM$mean_range = apply(rangeSim[,-1], 1, mean  )#
+###########################################################################################
+#########   comparison of slopes  brownian motion versus empirical data,  and the range of the 500 simuulation  in tim-slices of 0.15 Myr#
+###########################################################################################
+#
+###. slope is calcualted over 3 timeslices , starting from each timeslice -> sliding window with overlap#
+smo=3#
+#
+Dif_slopeBMrange = matrix(NA,(dim(statsOtime)[1]-smo), 500 )#
+LstatsOtime= cbind(statsOtime$time, normalize(statsOtime$range)*100)#
+for ( i in 1:500) {#
+        for ( j in 1:(dim(statsOtime)[1]-smo) ){#
+                tmpSIM= cbind(statsOtime$time, normalize(rangeSim[,i+1])*100)#
+                BM_slope= lm( tmpSIM[j:(j+smo),2] ~ tmpSIM[j:(j+smo),1])$coefficients[2]#
+                OBS_slope= lm( LstatsOtime[j:(j+smo),2] ~ LstatsOtime[j:(j+smo),1])$coefficients[2]#
+                Dif_slopeBMrange[j,i]= OBS_slope- BM_slope#
+        }#
+}#
+MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)
+###  get the timevector of the center of each sliding window (for plotting the slopes its shifted because the slope is calculated inbetween three sampling points #
+#
+tshift=median(statsOtime$time[1:c(smo+1)])#
+t1=statsOtime$time+tshift#
+t1= t1[1:c(length(t1)-smo)]
+k=nrow(Dif_slopeBMrange)#
+        dd=c(0.05/2, 1-0.05/2)#
+        tmp=sapply(1:k, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+        yy=c(tmp[1,], rev(tmp[2,]))#
+        xx=c(t1 , rev(t1))#
+        polyRANG_E_RANGE =cbind(x=xx, y=yy)
+plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="n", axes=F, xlab="", ylab="")
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="")
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)
+axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))
+polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)
+abline(h=0, col="grey", lty="dashed")
+lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)
+mtext("Time (Ma)", 1, line=1.4, cex=0.75)
+mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)
+root
+root2
+root2=ceiling(root)
+root2
+tck = -0.02
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)
+cex.axis=0.5
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="", xlim=c(0,10))
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="", xlim=c(0,10))#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)
+save(statsOtime, file=paste(dirname, "EB_stats_over_time_observed.Rdata", sep=""))#
+save(mean_statsBM, file=paste(dirname, "EB_stats_over_time_BM.Rdata", sep=""))#
+#
+Dif_slopeBMrange2 =cbind(t1, Dif_slopeBMrange )#
+save(Dif_slopeBMrange2, file=paste(dirname, "EB_Diff_slope_to_sim_over_time.Rdata", sep=""))
+dirname
+dirname="../output/output_b2_PLS_body/"
+TRAIT= "PLS"
+AXES= "body"
+phylogeny#
+# get orig. tree#
+origtree= read.tree(paste(dirname, "out_", TRAIT, "_", AXES, "_origtree.tre" , sep="") )#
+origtree= ladderize(origtree)#
+#
+# get data:#
+d = read.table("../input/PLS_body.txt", head=F)#
+d2= d[,2];names(d2)= d[,1]#
+#head(d2)#
+#
+###  reconstruct ancestral states under early burst model#
+#
+f = fastAnc(origtree, d2)#
+str(f)#
+tmp = anc.ML(origtree, d2,  model="EB", maxit=100, r.init=-0.204003)#
+#
+tmp#
+#
+#### second method#
+require(Rphylopars)#
+#
+head(d)#
+names(d)=c("species", "body")#
+#
+tmp1=phylopars(trait_data=d, tree=origtree, model = "EB", repeat_optim_limit = 1, EM_missing_limit = 500000)#
+str(tmp1)#
+tmp1$model#
+tmp1$anc_recon#
+tmp1$mu ## root state#
+tmp1$npars#
+tmp1$pars#
+#
+head(tmp1$anc_recon)#
+#
+write.table( tmp1$anc_recon, paste(dirname, "EBAncRec_", TRAIT, "_", AXES, ".txt", sep=""), row.names=T, quote=F, sep="\t" )#
+#
+################################ ################################ ################################ #
+################################   sample Ancetral states in time slices  #
+################################ ################################ #################################
+#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+#
+##  define timeslices: start at the root and increas in 1.5 Million years + additionally the tips#
+n= STEP#
+n= 0.15#
+v= c(seq(from=0, to=root, by= n) , root)#
+#
+###  combine states of the nodes with nodeages#
+#
+new=tmp1$anc_recon#
+#
+xx = node.depth.edgelength(origtree)  ### get age of each node#
+yy.bayPC =  cbind(new, xx)            ###  seting reconstructed phenotype with x coolrdinate (age) of corresponding node#
+##### for each timepoint reconstruct the state linearly to the distance between the two node stages#
+Yt= list()#
+for ( i in c(1: (length(v)-1)) ) {      #
+        tmp.bayPC3      = intersect(which(H[,1]<= v[i] ), which( H[,2] >= v[i] ))  ###  get row number for the nodesHeights within root and timepoint  ---   get all edges crossing the timeslcie v:tips, but not ending before ( not adding nodes which are not present anymore)#
+        tmp.bayPC.node3 = origtree $edge[tmp.bayPC3,]                   ### get nodes of all branches between root and timepoint #
+        start           = yy.bayPC[tmp.bayPC.node3[,1],]#
+        end             = yy.bayPC[tmp.bayPC.node3[,2],]#
+        t               = rep(v[i],times= length(end[,1]))#
+        y3              =(((end[,1]-start[,1])/(end[,2]-start[,2])) * (v[i] - start[,2])) + start[,1]#
+        Yt[[i]]         =cbind(y3, t)#
+}#
+#
+v2= v[-(length(v)-1)]#
+#
+out3=NULL#
+for ( k in 1: length(v2)){#
+        tmp3= unlist(Yt[[k]])#
+        tmp3.2= data.frame(tmp3, "sample" = v2[k])#
+        out3= rbind(out3, tmp3.2)#
+}#
+#
+out4=out3[,c(1,3)]#
+#head(out4)#
+#
+######## save to file#
+write.table(out4,paste(dirname,  "EBAncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), row.names=F, quote=F, sep="\t" )
+STEP=0.15 #STEP= as.numeric(args[5])
+TRAIT= "PLS"#
+AXES= "body"#
+dirname="../output/output_b2_PLS_body/"
+# get orig. tree#
+origtree= read.tree(paste(dirname, "out_", TRAIT, "_", AXES, "_origtree.tre" , sep="") )#
+origtree= ladderize(origtree)#
+#
+# get data:#
+d = read.table("../input/PLS_body.txt", head=F)#
+d2= d[,2];names(d2)= d[,1]#
+#head(d2)
+head(d)#
+names(d)=c("species", "body")#
+#
+tmp1=phylopars(trait_data=d, tree=origtree, model = "EB", repeat_optim_limit = 1, EM_missing_limit = 500000)#
+str(tmp1)#
+tmp1$model#
+tmp1$anc_recon#
+tmp1$mu ## root state#
+tmp1$npars#
+tmp1$pars#
+#
+head(tmp1$anc_recon)#
+#
+write.table( tmp1$anc_recon, paste(dirname, "EBAncRec_", TRAIT, "_", AXES, ".txt", sep=""), row.names=T, quote=F, sep="\t" )#
+#
+################################ ################################ ################################ #
+################################   sample Ancetral states in time slices
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+#
+##  define timeslices: start at the root and increas in 1.5 Million years + additionally the tips#
+n= STEP#
+n= 0.15#
+v= c(seq(from=0, to=root, by= n) , root)#
+#
+###  combine states of the nodes with nodeages#
+#
+new=tmp1$anc_recon#
+#
+xx = node.depth.edgelength(origtree)  ### get age of each node#
+yy.bayPC =  cbind(new, xx)            ###  seting reconstructed phenotype with x coolrdinate (age) of corresponding node#
+##### for each timepoint reconstruct the state linearly to the distance between the two node stages#
+Yt= list()#
+for ( i in c(1: (length(v)-1)) ) {      #
+        tmp.bayPC3      = intersect(which(H[,1]<= v[i] ), which( H[,2] >= v[i] ))  ###  get row number for the nodesHeights within root and timepoint  ---   get all edges crossing the timeslcie v:tips, but not ending before ( not adding nodes which are not present anymore)#
+        tmp.bayPC.node3 = origtree $edge[tmp.bayPC3,]                   ### get nodes of all branches between root and timepoint #
+        start           = yy.bayPC[tmp.bayPC.node3[,1],]#
+        end             = yy.bayPC[tmp.bayPC.node3[,2],]#
+        t               = rep(v[i],times= length(end[,1]))#
+        y3              =(((end[,1]-start[,1])/(end[,2]-start[,2])) * (v[i] - start[,2])) + start[,1]#
+        Yt[[i]]         =cbind(y3, t)#
+}#
+#
+v2= v[-(length(v)-1)]#
+#
+out3=NULL#
+for ( k in 1: length(v2)){#
+        tmp3= unlist(Yt[[k]])#
+        tmp3.2= data.frame(tmp3, "sample" = v2[k])#
+        out3= rbind(out3, tmp3.2)#
+}#
+#
+out4=out3[,c(1,3)]#
+#head(out4)#
+#
+######## save to file#
+write.table(out4,paste(dirname,  "EBAncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), row.names=F, quote=F, sep="\t" )
+dirname
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)#
+d$sample2 = as.factor(d$sample)#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+#
+###########################################################################################
+#########   prepare the output for the different stats per timeslice over the trait axes#
+###########################################################################################
+#
+statsOtime= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+statsOtime[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(statsOtime)="time"#
+##############################################
+#########  ----------------------------------- get range from each timeslice:#
+minv= aggregate( d[,1], list(d$sample2), min)#
+maxv= aggregate( d[,1], list(d$sample2), max)#
+### range of the axes#
+statsOtime$range= abs(minv[,-1]-maxv[,-1])#
+##############################################
+######################  --------------------- get number of linegaes per timeslice#
+count_per_bin= aggregate( d[,1], list(d$sample2), length )#
+## combine and remove the first row = root value as diversity= 0#
+statsOtime$numLineages = count_per_bin[,2]#
+###########################################################################################
+#########   do the same stats over the BM iterations#
+###########################################################################################
+#
+numsim=500#
+BM_raw=read.table( paste(dirname, "Anc_states_BMnullModel","_", numsim, "sim", "_", TRAIT, "_", AXES, ".txt" ,sep=""),h=T)#
+#####  prepare output for the mean values#
+mean_statsBM= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+mean_statsBM[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(mean_statsBM)="time"#
+#
+##############################################
+#########  ----------------------------------- get range from each timeslice for each iteration#
+rangeSim = aggregate( BM_raw[,2: (numsim+1)], list(d$sample2), function(x) abs(diff(range(x))))#
+mean_statsBM$mean_range = apply(rangeSim[,-1], 1, mean  )#
+###########################################################################################
+#########   comparison of slopes  brownian motion versus empirical data,  and the range of the 500 simuulation  in tim-slices of 0.15 Myr#
+###########################################################################################
+#
+###. slope is calcualted over 3 timeslices , starting from each timeslice -> sliding window with overlap#
+smo=3#
+#
+Dif_slopeBMrange = matrix(NA,(dim(statsOtime)[1]-smo), 500 )#
+LstatsOtime= cbind(statsOtime$time, normalize(statsOtime$range)*100)#
+for ( i in 1:500) {#
+        for ( j in 1:(dim(statsOtime)[1]-smo) ){#
+                tmpSIM= cbind(statsOtime$time, normalize(rangeSim[,i+1])*100)#
+                BM_slope= lm( tmpSIM[j:(j+smo),2] ~ tmpSIM[j:(j+smo),1])$coefficients[2]#
+                OBS_slope= lm( LstatsOtime[j:(j+smo),2] ~ LstatsOtime[j:(j+smo),1])$coefficients[2]#
+                Dif_slopeBMrange[j,i]= OBS_slope- BM_slope#
+        }#
+}#
+MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+#
+###  get the timevector of the center of each sliding window (for plotting the slopes its shifted because the slope is calculated inbetween three sampling points #
+#
+tshift=median(statsOtime$time[1:c(smo+1)])#
+t1=statsOtime$time+tshift#
+t1= t1[1:c(length(t1)-smo)]#
+###  calucualte teh 95% polygon for the comparisons to all the 500 BM simulations#
+#
+        k=nrow(Dif_slopeBMrange)#
+        dd=c(0.05/2, 1-0.05/2)#
+        tmp=sapply(1:k, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+        yy=c(tmp[1,], rev(tmp[2,]))#
+        xx=c(t1 , rev(t1))#
+        polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+######. plot #
+root2=ceiling(root)#
+tck = -0.02#
+cex.axis=0.5#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="", xlim=c(0,10))#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+save(statsOtime, file=paste(dirname, "EB_stats_over_time_observed.Rdata", sep=""))#
+save(mean_statsBM, file=paste(dirname, "EB_stats_over_time_BM.Rdata", sep=""))#
+#
+Dif_slopeBMrange2 =cbind(t1, Dif_slopeBMrange )#
+save(Dif_slopeBMrange2, file=paste(dirname, "EB_Diff_slope_to_sim_over_time.Rdata", sep=""))
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="", xlim=c(0,10))#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)
+dev.off()
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=F, xlab="", ylab="", xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)")
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)")
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1)
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, )
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, xaxt=F)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, xais=F)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, xaxis=F)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, xaxes=F)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l", axes=T, xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, xaxes=F)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, xaxis=F)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F)
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))
+axis(2)
+polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)
+abline(h=0, col="grey", lty="dashed")
+lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)
+ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))
+axis(2)
+polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)
+abline(h=0, col="grey", lty="dashed")
+lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)
+ylim
+plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F)
+axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+#
+dev.off()
+save(statsOtime, file=paste(dirname, "EB_stats_over_time_observed.Rdata", sep=""))#
+save(mean_statsBM, file=paste(dirname, "EB_stats_over_time_BM.Rdata", sep=""))#
+#
+Dif_slopeBMrange2 =cbind(t1, Dif_slopeBMrange )#
+save(Dif_slopeBMrange2, file=paste(dirname, "EB_Diff_slope_to_sim_over_time.Rdata", sep=""))
+dirname
+dirname="../output/output_b1_PLS_body"
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)#
+d$sample2 = as.factor(d$sample)#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+#
+###########################################################################################
+#########   prepare the output for the different stats per timeslice over the trait axes#
+###########################################################################################
+#
+statsOtime= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+statsOtime[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(statsOtime)="time"
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)
+AXES="body"
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)
+dirname
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)
+dirname
+dirname="../output/output_b1_PLS_body/"
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)
+d$sample2 = as.factor(d$sample)
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+#
+###########################################################################################
+#########   prepare the output for the different stats per timeslice over the trait axes#
+###########################################################################################
+#
+statsOtime= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+statsOtime[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(statsOtime)="time"#
+##############################################
+#########  ----------------------------------- get range from each timeslice:#
+minv= aggregate( d[,1], list(d$sample2), min)#
+maxv= aggregate( d[,1], list(d$sample2), max)#
+### range of the axes#
+statsOtime$range= abs(minv[,-1]-maxv[,-1])#
+##############################################
+######################  --------------------- get number of linegaes per timeslice#
+count_per_bin= aggregate( d[,1], list(d$sample2), length )#
+## combine and remove the first row = root value as diversity= 0#
+statsOtime$numLineages = count_per_bin[,2]#
+###########################################################################################
+#########   do the same stats over the BM iterations#
+###########################################################################################
+#
+numsim=500#
+BM_raw=read.table( paste(dirname, "Anc_states_BMnullModel","_", numsim, "sim", "_", TRAIT, "_", AXES, ".txt" ,sep=""),h=T)#
+#####  prepare output for the mean values#
+mean_statsBM= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+mean_statsBM[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(mean_statsBM)="time"#
+#
+##############################################
+#########  ----------------------------------- get range from each timeslice for each iteration#
+rangeSim = aggregate( BM_raw[,2: (numsim+1)], list(d$sample2), function(x) abs(diff(range(x))))#
+mean_statsBM$mean_range = apply(rangeSim[,-1], 1, mean  )
+###########################################################################################
+#########   comparison of slopes  brownian motion versus empirical data,  and the range of the 500 simuulation  in tim-slices of 0.15 Myr#
+###########################################################################################
+#
+###. slope is calcualted over 3 timeslices , starting from each timeslice -> sliding window with overlap#
+smo=3#
+#
+Dif_slopeBMrange = matrix(NA,(dim(statsOtime)[1]-smo), 500 )#
+LstatsOtime= cbind(statsOtime$time, normalize(statsOtime$range)*100)#
+for ( i in 1:500) {#
+        for ( j in 1:(dim(statsOtime)[1]-smo) ){#
+                tmpSIM= cbind(statsOtime$time, normalize(rangeSim[,i+1])*100)#
+                BM_slope= lm( tmpSIM[j:(j+smo),2] ~ tmpSIM[j:(j+smo),1])$coefficients[2]#
+                OBS_slope= lm( LstatsOtime[j:(j+smo),2] ~ LstatsOtime[j:(j+smo),1])$coefficients[2]#
+                Dif_slopeBMrange[j,i]= OBS_slope- BM_slope#
+        }#
+}#
+MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+#
+###  get the timevector of the center of each sliding window (for plotting the slopes its shifted because the slope is calculated inbetween three sampling points #
+#
+tshift=median(statsOtime$time[1:c(smo+1)])#
+t1=statsOtime$time+tshift#
+t1= t1[1:c(length(t1)-smo)]#
+###  calucualte teh 95% polygon for the comparisons to all the 500 BM simulations#
+#
+        k=nrow(Dif_slopeBMrange)#
+        dd=c(0.05/2, 1-0.05/2)#
+        tmp=sapply(1:k, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+        yy=c(tmp[1,], rev(tmp[2,]))#
+        xx=c(t1 , rev(t1))#
+        polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+######. plot
+root2=ceiling(root)#
+tck = -0.02#
+cex.axis=0.5
+ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+#
+dev.off()
+root
+dirname
+t1
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,10), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+#
+dev.off()
+root2
+H = nodeHeights(origtree)  ### get age of each node
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+tck = -0.02#
+cex.axis=0.5#
+#
+ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,root2), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+#
+dev.off()
+dirname
+t1
+statsOtime
+########
+######
+#       character state reconstruction:  Estimating the ancestral states based on varRates model#
+#######
+## load libraries#
+require(phytools)#
+#
+##  get variables from command line#
+#args = commandArgs(trailingOnly=TRUE)#
+#
+#dirname= args[1]#
+#TRAIT= args[2]#
+#AXES= args[3]#
+STEP=0.15 #STEP= as.numeric(args[5])#
+#
+TRAIT= "PLS"#
+AXES= "body"#
+dirname="../output/output_b2_PLS_body/"#
+##########################   ---  map the ancestral states on the original phylogeny#
+# get orig. tree#
+origtree= read.tree(paste(dirname, "out_", TRAIT, "_", AXES, "_origtree.tre" , sep="") )#
+origtree= ladderize(origtree)#
+#
+# get data:#
+d = read.table("../input/PLS_body.txt", head=F)#
+d2= d[,2];names(d2)= d[,1]#
+#head(d2)#
+#
+###  reconstruct ancestral states under early burst model#
+#
+#f = fastAnc(origtree, d2)#
+#str(f)#
+#tmp = anc.ML(origtree, d2,  model="EB", maxit=100, r.init=-0.204003)#
+#
+#tmp#
+#
+#### second method#
+require(Rphylopars)#
+#
+head(d)#
+names(d)=c("species", "body")#
+#
+tmp1=phylopars(trait_data=d, tree=origtree, model = "EB", repeat_optim_limit = 1, EM_missing_limit = 500000)#
+str(tmp1)#
+tmp1$model#
+tmp1$anc_recon#
+tmp1$mu ## root state#
+tmp1$npars#
+tmp1$pars#
+#
+head(tmp1$anc_recon)#
+#
+write.table( tmp1$anc_recon, paste(dirname, "EBAncRec_", TRAIT, "_", AXES, ".txt", sep=""), row.names=T, quote=F, sep="\t" )#
+#
+################################ ################################ ################################ #
+################################   sample Ancetral states in time slices  #
+################################ ################################ #################################
+#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+#
+##  define timeslices: start at the root and increas in 1.5 Million years + additionally the tips#
+n= STEP#
+n= 0.15#
+v= c(seq(from=0, to=root, by= n) , root)#
+#
+###  combine states of the nodes with nodeages#
+#
+new=tmp1$anc_recon#
+#
+xx = node.depth.edgelength(origtree)  ### get age of each node#
+yy.bayPC =  cbind(new, xx)            ###  seting reconstructed phenotype with x coolrdinate (age) of corresponding node#
+##### for each timepoint reconstruct the state linearly to the distance between the two node stages#
+Yt= list()#
+for ( i in c(1: (length(v)-1)) ) {      #
+        tmp.bayPC3      = intersect(which(H[,1]<= v[i] ), which( H[,2] >= v[i] ))  ###  get row number for the nodesHeights within root and timepoint  ---   get all edges crossing the timeslcie v:tips, but not ending before ( not adding nodes which are not present anymore)#
+        tmp.bayPC.node3 = origtree $edge[tmp.bayPC3,]                   ### get nodes of all branches between root and timepoint #
+        start           = yy.bayPC[tmp.bayPC.node3[,1],]#
+        end             = yy.bayPC[tmp.bayPC.node3[,2],]#
+        t               = rep(v[i],times= length(end[,1]))#
+        y3              =(((end[,1]-start[,1])/(end[,2]-start[,2])) * (v[i] - start[,2])) + start[,1]#
+        Yt[[i]]         =cbind(y3, t)#
+}#
+#
+v2= v[-(length(v)-1)]#
+#
+out3=NULL#
+for ( k in 1: length(v2)){#
+        tmp3= unlist(Yt[[k]])#
+        tmp3.2= data.frame(tmp3, "sample" = v2[k])#
+        out3= rbind(out3, tmp3.2)#
+}#
+#
+out4=out3[,c(1,3)]#
+#head(out4)#
+#
+######## save to file#
+write.table(out4,paste(dirname,  "EBAncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), row.names=F, quote=F, sep="\t" )
+########
+######
+#       character state reconstruction:  Estimating the ancestral states based on varRates model#
+#######
+## load libraries#
+require(phytools)#
+#
+##  get variables from command line#
+#args = commandArgs(trailingOnly=TRUE)#
+#
+#dirname= args[1]#
+#TRAIT= args[2]#
+#AXES= args[3]#
+STEP=0.15 #STEP= as.numeric(args[5])#
+#
+TRAIT= "PLS"#
+AXES= "body"#
+dirname="../output/output_b1_PLS_body/"#
+##########################   ---  map the ancestral states on the original phylogeny#
+# get orig. tree#
+origtree= read.tree(paste(dirname, "out_", TRAIT, "_", AXES, "_origtree.tre" , sep="") )#
+origtree= ladderize(origtree)#
+#
+# get data:#
+d = read.table("../input/PLS_body.txt", head=F)#
+d2= d[,2];names(d2)= d[,1]#
+#head(d2)#
+#
+###  reconstruct ancestral states under early burst model#
+#
+#f = fastAnc(origtree, d2)#
+#str(f)#
+#tmp = anc.ML(origtree, d2,  model="EB", maxit=100, r.init=-0.204003)#
+#
+#tmp#
+#
+#### second method#
+require(Rphylopars)#
+#
+head(d)#
+names(d)=c("species", "body")#
+#
+tmp1=phylopars(trait_data=d, tree=origtree, model = "EB", repeat_optim_limit = 1, EM_missing_limit = 500000)#
+str(tmp1)#
+tmp1$model#
+tmp1$anc_recon#
+tmp1$mu ## root state#
+tmp1$npars#
+tmp1$pars#
+#
+head(tmp1$anc_recon)#
+#
+write.table( tmp1$anc_recon, paste(dirname, "EBAncRec_", TRAIT, "_", AXES, ".txt", sep=""), row.names=T, quote=F, sep="\t" )#
+#
+################################ ################################ ################################ #
+################################   sample Ancetral states in time slices  #
+################################ ################################ #################################
+#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+#
+##  define timeslices: start at the root and increas in 1.5 Million years + additionally the tips#
+n= STEP#
+n= 0.15#
+v= c(seq(from=0, to=root, by= n) , root)#
+#
+###  combine states of the nodes with nodeages#
+#
+new=tmp1$anc_recon#
+#
+xx = node.depth.edgelength(origtree)  ### get age of each node#
+yy.bayPC =  cbind(new, xx)            ###  seting reconstructed phenotype with x coolrdinate (age) of corresponding node#
+##### for each timepoint reconstruct the state linearly to the distance between the two node stages#
+Yt= list()#
+for ( i in c(1: (length(v)-1)) ) {      #
+        tmp.bayPC3      = intersect(which(H[,1]<= v[i] ), which( H[,2] >= v[i] ))  ###  get row number for the nodesHeights within root and timepoint  ---   get all edges crossing the timeslcie v:tips, but not ending before ( not adding nodes which are not present anymore)#
+        tmp.bayPC.node3 = origtree $edge[tmp.bayPC3,]                   ### get nodes of all branches between root and timepoint #
+        start           = yy.bayPC[tmp.bayPC.node3[,1],]#
+        end             = yy.bayPC[tmp.bayPC.node3[,2],]#
+        t               = rep(v[i],times= length(end[,1]))#
+        y3              =(((end[,1]-start[,1])/(end[,2]-start[,2])) * (v[i] - start[,2])) + start[,1]#
+        Yt[[i]]         =cbind(y3, t)#
+}#
+#
+v2= v[-(length(v)-1)]#
+#
+out3=NULL#
+for ( k in 1: length(v2)){#
+        tmp3= unlist(Yt[[k]])#
+        tmp3.2= data.frame(tmp3, "sample" = v2[k])#
+        out3= rbind(out3, tmp3.2)#
+}#
+#
+out4=out3[,c(1,3)]#
+#head(out4)#
+#
+######## save to file#
+write.table(out4,paste(dirname,  "EBAncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), row.names=F, quote=F, sep="\t" )
+dirname
+#############################################
+##################  ------ calculate morphospace expansion through time for the empirical data and the 500 Brownian motion simulations and compare them#
+##############################################
+##  get variables from comand line#
+#args = commandArgs(trailingOnly=TRUE)#
+#
+#dirname= args[1]#
+#TRAIT= args[2]#
+#AXES= args[3]#
+n=0.15 #n= as.numeric(args[6])#
+TRAIT= "PLS"#
+AXES= "body"#
+dirname="../output/output_b1_PLS_body/"#
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)#
+d$sample2 = as.factor(d$sample)#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+#
+###########################################################################################
+#########   prepare the output for the different stats per timeslice over the trait axes#
+###########################################################################################
+#
+statsOtime= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+statsOtime[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(statsOtime)="time"#
+##############################################
+#########  ----------------------------------- get range from each timeslice:#
+minv= aggregate( d[,1], list(d$sample2), min)#
+maxv= aggregate( d[,1], list(d$sample2), max)#
+### range of the axes#
+statsOtime$range= abs(minv[,-1]-maxv[,-1])#
+##############################################
+######################  --------------------- get number of linegaes per timeslice#
+count_per_bin= aggregate( d[,1], list(d$sample2), length )#
+## combine and remove the first row = root value as diversity= 0#
+statsOtime$numLineages = count_per_bin[,2]#
+###########################################################################################
+#########   do the same stats over the BM iterations#
+###########################################################################################
+#
+numsim=500#
+BM_raw=read.table( paste(dirname, "Anc_states_BMnullModel","_", numsim, "sim", "_", TRAIT, "_", AXES, ".txt" ,sep=""),h=T)#
+#####  prepare output for the mean values#
+mean_statsBM= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+mean_statsBM[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(mean_statsBM)="time"#
+#
+##############################################
+#########  ----------------------------------- get range from each timeslice for each iteration#
+rangeSim = aggregate( BM_raw[,2: (numsim+1)], list(d$sample2), function(x) abs(diff(range(x))))#
+mean_statsBM$mean_range = apply(rangeSim[,-1], 1, mean  )#
+###########################################################################################
+#########   comparison of slopes  brownian motion versus empirical data,  and the range of the 500 simuulation  in tim-slices of 0.15 Myr#
+###########################################################################################
+#
+###. slope is calcualted over 3 timeslices , starting from each timeslice -> sliding window with overlap#
+smo=3#
+#
+Dif_slopeBMrange = matrix(NA,(dim(statsOtime)[1]-smo), 500 )#
+LstatsOtime= cbind(statsOtime$time, normalize(statsOtime$range)*100)#
+for ( i in 1:500) {#
+        for ( j in 1:(dim(statsOtime)[1]-smo) ){#
+                tmpSIM= cbind(statsOtime$time, normalize(rangeSim[,i+1])*100)#
+                BM_slope= lm( tmpSIM[j:(j+smo),2] ~ tmpSIM[j:(j+smo),1])$coefficients[2]#
+                OBS_slope= lm( LstatsOtime[j:(j+smo),2] ~ LstatsOtime[j:(j+smo),1])$coefficients[2]#
+                Dif_slopeBMrange[j,i]= OBS_slope- BM_slope#
+        }#
+}#
+MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+#
+###  get the timevector of the center of each sliding window (for plotting the slopes its shifted because the slope is calculated inbetween three sampling points #
+#
+tshift=median(statsOtime$time[1:c(smo+1)])#
+t1=statsOtime$time+tshift#
+t1= t1[1:c(length(t1)-smo)]#
+###  calucualte teh 95% polygon for the comparisons to all the 500 BM simulations#
+#
+        k=nrow(Dif_slopeBMrange)#
+        dd=c(0.05/2, 1-0.05/2)#
+        tmp=sapply(1:k, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+        yy=c(tmp[1,], rev(tmp[2,]))#
+        xx=c(t1 , rev(t1))#
+        polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+######. plot #
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+tck = -0.02#
+cex.axis=0.5#
+#
+ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,root2), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+#
+dev.off()#
+#
+dirname#
+t1#
+save(statsOtime, file=paste(dirname, "EB_stats_over_time_observed.Rdata", sep=""))#
+save(mean_statsBM, file=paste(dirname, "EB_stats_over_time_BM.Rdata", sep=""))#
+#
+Dif_slopeBMrange2 =cbind(t1, Dif_slopeBMrange )#
+save(Dif_slopeBMrange2, file=paste(dirname, "EB_Diff_slope_to_sim_over_time.Rdata", sep=""))
+H = nodeHeights(origtree)  ### get age of each node
+# get orig. tree#
+origtree= read.tree(paste(dirname, "out_", TRAIT, "_", AXES, "_origtree.tre" , sep="") )#
+origtree= ladderize(origtree)
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]
+root2=ceiling(root)#
+tck = -0.02#
+cex.axis=0.5
+ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,root2), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+#
+dev.off()#
+#
+dirname#
+t1
+save(statsOtime, file=paste(dirname, "EB_stats_over_time_observed.Rdata", sep=""))#
+save(mean_statsBM, file=paste(dirname, "EB_stats_over_time_BM.Rdata", sep=""))#
+#
+Dif_slopeBMrange2 =cbind(t1, Dif_slopeBMrange )#
+save(Dif_slopeBMrange2, file=paste(dirname, "EB_Diff_slope_to_sim_over_time.Rdata", sep=""))
+#############################################
+##################  ------ calculate morphospace expansion through time for the empirical data and the 500 Brownian motion simulations and compare them#
+##############################################
+##  get variables from comand line#
+#args = commandArgs(trailingOnly=TRUE)#
+#
+#dirname= args[1]#
+#TRAIT= args[2]#
+#AXES= args[3]#
+n=0.15 #n= as.numeric(args[6])#
+TRAIT= "PLS"#
+AXES= "body"#
+dirname="../output/output_b2_PLS_body/"#
+d= read.table(paste(dirname,"EBAncRec_sampled_by","_",n,"_",TRAIT,"_",AXES, ".txt", sep=""), h=T)#
+d$sample2 = as.factor(d$sample)#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+#
+###########################################################################################
+#########   prepare the output for the different stats per timeslice over the trait axes#
+###########################################################################################
+#
+statsOtime= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+statsOtime[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(statsOtime)="time"#
+##############################################
+#########  ----------------------------------- get range from each timeslice:#
+minv= aggregate( d[,1], list(d$sample2), min)#
+maxv= aggregate( d[,1], list(d$sample2), max)#
+### range of the axes#
+statsOtime$range= abs(minv[,-1]-maxv[,-1])#
+##############################################
+######################  --------------------- get number of linegaes per timeslice#
+count_per_bin= aggregate( d[,1], list(d$sample2), length )#
+## combine and remove the first row = root value as diversity= 0#
+statsOtime$numLineages = count_per_bin[,2]#
+###########################################################################################
+#########   do the same stats over the BM iterations#
+###########################################################################################
+#
+numsim=500#
+BM_raw=read.table( paste(dirname, "Anc_states_BMnullModel","_", numsim, "sim", "_", TRAIT, "_", AXES, ".txt" ,sep=""),h=T)#
+#####  prepare output for the mean values#
+mean_statsBM= as.data.frame(matrix(NA, length(levels(d$sample2)) , 1 ))#
+mean_statsBM[,1]= as.numeric(as.character(levels(d$sample2)))#
+names(mean_statsBM)="time"#
+#
+##############################################
+#########  ----------------------------------- get range from each timeslice for each iteration#
+rangeSim = aggregate( BM_raw[,2: (numsim+1)], list(d$sample2), function(x) abs(diff(range(x))))#
+mean_statsBM$mean_range = apply(rangeSim[,-1], 1, mean  )#
+###########################################################################################
+#########   comparison of slopes  brownian motion versus empirical data,  and the range of the 500 simuulation  in tim-slices of 0.15 Myr#
+###########################################################################################
+#
+###. slope is calcualted over 3 timeslices , starting from each timeslice -> sliding window with overlap#
+smo=3#
+#
+Dif_slopeBMrange = matrix(NA,(dim(statsOtime)[1]-smo), 500 )#
+LstatsOtime= cbind(statsOtime$time, normalize(statsOtime$range)*100)#
+for ( i in 1:500) {#
+        for ( j in 1:(dim(statsOtime)[1]-smo) ){#
+                tmpSIM= cbind(statsOtime$time, normalize(rangeSim[,i+1])*100)#
+                BM_slope= lm( tmpSIM[j:(j+smo),2] ~ tmpSIM[j:(j+smo),1])$coefficients[2]#
+                OBS_slope= lm( LstatsOtime[j:(j+smo),2] ~ LstatsOtime[j:(j+smo),1])$coefficients[2]#
+                Dif_slopeBMrange[j,i]= OBS_slope- BM_slope#
+        }#
+}#
+MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+#
+###  get the timevector of the center of each sliding window (for plotting the slopes its shifted because the slope is calculated inbetween three sampling points #
+#
+tshift=median(statsOtime$time[1:c(smo+1)])#
+t1=statsOtime$time+tshift#
+t1= t1[1:c(length(t1)-smo)]#
+###  calucualte teh 95% polygon for the comparisons to all the 500 BM simulations#
+#
+        k=nrow(Dif_slopeBMrange)#
+        dd=c(0.05/2, 1-0.05/2)#
+        tmp=sapply(1:k, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+        yy=c(tmp[1,], rev(tmp[2,]))#
+        xx=c(t1 , rev(t1))#
+        polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+######. plot #
+#
+# get orig. tree#
+origtree= read.tree(paste(dirname, "out_", TRAIT, "_", AXES, "_origtree.tre" , sep="") )#
+origtree= ladderize(origtree)#
+#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+#
+root2=ceiling(root)#
+tck = -0.02#
+cex.axis=0.5#
+#
+ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+pdf(file=paste(dirname, "EBrecon_body.pdf", sep=""))#
+		plot(t1, MEAN_DIF_SLOPE_RANGE,t="l",  xlim=c(0,root2), xlab="Time (Ma)", ylab="Difference in slope \n(observed - BM)", las=1, axes=F, ylim=ylim)#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))))#
+		axis(2)#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+#
+dev.off()#
+#
+dirname#
+t1#
+save(statsOtime, file=paste(dirname, "EB_stats_over_time_observed.Rdata", sep=""))#
+save(mean_statsBM, file=paste(dirname, "EB_stats_over_time_BM.Rdata", sep=""))#
+#
+Dif_slopeBMrange2 =cbind(t1, Dif_slopeBMrange )#
+save(Dif_slopeBMrange2, file=paste(dirname, "EB_Diff_slope_to_sim_over_time.Rdata", sep=""))
+H
+root
+## load libraries#
+require(phytools)#
+#
+##  get variables from command line#
+#args = commandArgs(trailingOnly=TRUE)#
+#
+#dirname= args[1]#
+#TRAIT= args[2]#
+#AXES= args[3]#
+STEP=0.15 #STEP= as.numeric(args[5])#
+#
+TRAIT= "PLS"#
+AXES= "body"#
+dirname="../output/output_b1_PLS_body/"#
+##########################   ---  map the ancestral states on the original phylogeny#
+# get orig. tree#
+origtree= read.tree(paste(dirname, "out_", TRAIT, "_", AXES, "_origtree.tre" , sep="") )
+H = nodeHeights(origtree)  ### get age of each node
+root=max(H[,2]) ##   get age of the root  ]]
+root
+?source
+source(https://CRAN.R-project.org/package=Rphylopars)
+source("https://CRAN.R-project.org/package=Rphylopars")
+require(devtools)#
+install_github("ericgoolsby/Rphylopars",dependencies = TRUE)
+install.packages("Rphylopars")
+?fitContinuous
+TREE="b2"#
+#
+max.value=34 ##BEAST;#
+# load packages#
+require(phytools)#
+require(scales)#
+require(gplots)#
+TRAIT="PLS"#
+n= 0.15    ####  recunstructed in n timeinterval#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+####  make asymetric color ramp, centered in 1#
+ramp1 = colorRampPalette(c("blue","grey"))#
+ramp2 = colorRampPalette(c("grey","gold","tomato","red", "darkred", "#3D0404"))#
+#
+# now specify the range and the center value#
+ min.value=0; mid.value=1#
+#range(treedat$meanRate)
+col_per_step=500/max.value#
+max.breaks = max.value - mid.value#
+min.breaks = mid.value - min.value#
+low.ramp = ramp1(min.breaks*(col_per_step))#
+high.ramp = ramp2(max.breaks*(col_per_step))#
+myColors= c(low.ramp, high.ramp)  #
+#
+#####. remove duplicates:#
+myColors=unique(myColors)#
+#
+# create breaks corresponding to the color ramp#
+breaks = 0:length(myColors)/length(myColors) * (max.value - min.value) + min.value#
+# make a function to assign colors from the palette with its breaks to the values you wanna plot#
+whichColor = function(p, cols, breaks) {#
+        i = 1#
+        while (p >= breaks[i] && p > breaks[i + 1]) i = i +1#
+        cols[i]#
+    }
+quartz( width =8.3 , height=11.7 , type="pdf", file=paste("../output/",TRAIT,"_", TREE, "_all_traits_panel.pdf", sep=""))#
+split.screen(figs=c(5,4), erase=T)#
+	#AXLIST=read.table(paste("axlist_", TRAIT, ".txt", sep=""))#
+	AXLIST=as.data.frame(c("body", "oral", "LPJ"))#
+	pos=c(1,5,9,13)#
+k=1#
+	for ( k in 1: 4){#
+		if ( k !=4) AXES= as.character(AXLIST[k,1])#
+		if ( k ==4){ #
+			AXES= "color"#
+			TRAIT="singletrait"}#
+#
+		dirname= paste("../output/output",TREE, TRAIT, AXES ,sep="_")#
+		filename=paste(dirname,"/out","_", TRAIT, "_",AXES, sep="")#
+# get orig. tree#
+		origtree= read.nexus(paste("../input/",TREE,"_pruned_to_", TRAIT,"_", AXES,"_" ,"data_nexus.tre", sep=""))#
+		origtree= ladderize(origtree)#
+		treedat =read.table(paste(dirname,"/",TRAIT,"_" ,AXES,"_", "treedat_forPlot.txt", sep=""), h=T)#
+#
+if(any(origtree$edge != treedat[,2:3])) stop("tree is in the wrong order!")#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+#
+##########################################  get sigma per trait, need burnin and log file#
+#head(treedat)#
+####  assign colors#
+		treedat$LogRate = treedat$relRate#
+ 		colors = sapply(treedat$LogRate, whichColor, cols = myColors, breaks = breaks)#
+		print(range(treedat$LogRate))#
+		treedat$PP2=treedat$PP2*0.5#
+#
+		screen(pos[k])#
+		par(mar= c(0.25,0.25,0.25,0.25))#
+		plot.phylo(origtree,cex=0.5, edge.width =1 , type="fan", edge.color=colors, show.tip.label=F, 	open.angle=20, rotate.tree=20, no.margin=F)#
+		edgelabels(pch=19, cex=treedat$PP2, col = alpha("tomato", 0.4))#
+		mtext(paste(" ",AXES,sep=""), side=3, adj=1.1, padj=1.75)#
+#
+#	add.color.bar(leg=5, cols= myColors, titel="Relative rates", outline=F, lims=range(breaks), prompt=F, x=5, y=1.5, lwd=5 )#
+barlen=( 5/diff(range(breaks)))*diff(range(treedat$LogRate))#
+colforbar= myColors [myColors %in% colors]#
+colforbar2 = myColors[grep(colforbar[1], myColors):grep(colforbar[length(colforbar)], myColors)]#
+	add.color.bar(leg= barlen, cols= colforbar2, titel="Relative rates", outline=F, lims=range(treedat$LogRate), prompt=F, x=5, y=1.5, lwd=5 )#
+####   get  densities and maek 2d hist#
+#
+		den = read.table(paste(dirname, "/" ,"AncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), h=T)#
+		nbins = trunc(root/n)#
+		a = hist2d( den $sample, den $y3, nbins= nbins, axes=F, show=F)#
+		maxa = max(a$counts)#
+		tck = -0.02#
+		xlim=c(0-(root2-root),root2)#
+#
+		screen(pos[k]+1)#
+		par(mar=c(2,2,2,2))#
+		hm_col_scale = colorRampPalette(c( "grey80", "black"))(maxa)#
+		hm_col_scale2= c("white", hm_col_scale)#
+		hist2d( den $sample, den $y3, nbins= nbins, col= hm_col_scale2, axes=F, xlim=xlim)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, las=1, cex.axis=0.5, padj=-3)   ######  fitx this, axies is shifted (only raphically)#
+		axis(2, tck= tck, las=1, cex.axis=0.5,  mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		range= c(0:maxa)#
+		topl= matrix(rep(range, length(range)), length(range), length(range))#
+		par(mar=c(2.1,2.1,7,8), new=T)#
+		image(t(topl), col= hm_col_scale2, axes=F)#
+		##  for even#
+		if((maxa %% 2) == 0) {#
+			at=c((1/maxa),seq(0,1,by=2/maxa)[-1])#
+			label=c(1,seq(0, maxa, by=2)[-1])#
+		}#
+		##  for odd#
+		if((maxa %% 2) != 0) {#
+			at=c(seq(0+(1/(maxa)),1, 2/(maxa)))#
+			label=seq(1, maxa, by=2)#
+		}#
+		axis(4, at= at , label= label , las=1, line=-0.8, cex.axis=0.3, lwd=0)#
+#		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+#		load(paste(dirname, "stats_over_time_BM.Rdata", sep="/"))#
+		load(paste(dirname, "Diff_slope_to_sim_over_time.Rdata", sep="/"))#
+		cex.axis=0.5#
+		t1=Dif_slopeBMrange2[,1]#
+		Dif_slopeBMrange= Dif_slopeBMrange2[,-1]#
+#
+		MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+		###  get the timevector of the center of each sliding window#
+		###  calucualte teh 95% polygon#
+		f=nrow(Dif_slopeBMrange)#
+		dd=c(0.05/2, 1-0.05/2)#
+		tmp=sapply(1:f, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+		yy=c(tmp[1,], rev(tmp[2,]))#
+		xx=c(t1 , rev(t1))#
+		polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+		screen(pos[k]+2)#
+		par(mar=c(2,2,2,2))#
+#
+		ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+		screen(pos[k]+3)#
+		par(mar=c(2,2,2,2))#
+#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+		mean_rateTT= read.csv(paste(dirname, "/mean_rate_tt.csv", sep=""))#
+		CI_rateTT= read.csv(paste(dirname, "/SD_rate_tt.csv", sep=""))#
+		ylim= c(0, max(CI_rateTT[, "y"]) *1.25)#
+	#	ylim= c(0, max(rate95TT[, "y"]) *1.25)#
+		plot(mean_rateTT$v, mean_rateTT$mean_rate, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		polygon(CI_rateTT[, "x"], CI_rateTT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+	#	polygon(rate95TT[, "x"], rate95TT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		lines(mean_rateTT$v, mean_rateTT$mean_rate, type="l",col="deepskyblue4", lwd=1.5)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Relative rate of evolution", 2, line=1, cex=0.75)#
+		abline(h=1, col="grey", lty="dashed")#
+	}		#
+close.screen(all.screens=T)#
+dev.off()#
+#legend("topright", legend=c("> 50", "> 75", "> 90"), pch=19, col=alpha("tomato", 0.3), bty="n", cex= 1,pt.cex=c( 0.5, 1, 1.5) , title ="PP")
+dirname
+###   get burnin from file#
+burn=read.table(paste( dirname,  "additional_burnin.txt", sep=""), h=F)#
+burnin=burn[1,1]
+burn=read.table(paste( dirname,  "additional_burnin.txt", sep=""), h=F)
+dirname="../output/output_b2_singletrait_color/"
+burn=read.table(paste( dirname,  "additional_burnin.txt", sep=""), h=F)
+burnin=burn[1,1]
+dirname="../output/output_b2_LPJ_oral/"
+AXES
+AXES="PLS"
+TRAIT="oral"
+burn=read.table(paste( dirname,  "additional_burnin.txt", sep=""), h=F)
+getwd()
+AXES="oral"
+TRAIT="PLS"
+dirname
+dirname="../output/output_b2_PLS_oral/"
+burn=read.table(paste( dirname,  "additional_burnin.txt", sep=""), h=F)
+burnin=burn[1,1]
+origtree= read.nexus(args[4])
+origtree= read.nexus("input/b2_pruned_to_PLS_oral_data_nexus.tre)
+origtree= read.nexus("input/b2_pruned_to_PLS_oral_data_nexus.tre")
+origtree= read.nexus("../input/b2_pruned_to_PLS_oral_data_nexus.tre")
+if (burnin>=1) trees1 = trees1[seq.int(burnin+1, length(trees1), 1)]
+origtree = ladderize(origtree)
+out= matrix( NA, length(origtree$edge.length),length(trees1) )#
+for ( i in 1: dim(out)[2]) {#
+        out[,i] = trees1[[i]]$edge.length/ origtree$edge.length#
+}
+if( !is.ultrametric(origtree))
+tree= force.ultrametric(origtree, method="nnls")
+!is.ultrametric(origtree)
+##  get variables from comand line#
+#
+TREE="b2"#
+#
+max.value=34 ##BEAST;#
+# load packages#
+require(phytools)#
+require(scales)#
+require(gplots)#
+TRAIT="PLS"#
+n= 0.15    ####  recunstructed in n timeinterval#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+####  make asymetric color ramp, centered in 1#
+ramp1 = colorRampPalette(c("blue","grey"))#
+ramp2 = colorRampPalette(c("grey","gold","tomato","red", "darkred", "#3D0404"))#
+#
+# now specify the range and the center value#
+ min.value=0; mid.value=1#
+#range(treedat$meanRate)#
+col_per_step=500/max.value#
+max.breaks = max.value - mid.value#
+min.breaks = mid.value - min.value#
+low.ramp = ramp1(min.breaks*(col_per_step))#
+high.ramp = ramp2(max.breaks*(col_per_step))#
+myColors= c(low.ramp, high.ramp)  #
+#
+#####. remove duplicates:#
+myColors=unique(myColors)#
+#
+# create breaks corresponding to the color ramp#
+breaks = 0:length(myColors)/length(myColors) * (max.value - min.value) + min.value#
+# make a function to assign colors from the palette with its breaks to the values you wanna plot#
+whichColor = function(p, cols, breaks) {#
+        i = 1#
+        while (p >= breaks[i] && p > breaks[i + 1]) i = i +1#
+        cols[i]#
+    }#
+###  open the pdf to write in all the plot parts#
+#
+quartz( width =8.3 , height=11.7 , type="pdf", file=paste("../output/",TRAIT,"_", TREE, "_all_traits_panel.pdf", sep=""))#
+split.screen(figs=c(5,4), erase=T)#
+	#AXLIST=read.table(paste("axlist_", TRAIT, ".txt", sep=""))#
+	AXLIST=as.data.frame(c("body", "oral", "LPJ"))#
+	pos=c(1,5,9,13)#
+k=1#
+	for ( k in 1: 4){#
+		if ( k !=4) AXES= as.character(AXLIST[k,1])#
+		if ( k ==4){ #
+			AXES= "color"#
+			TRAIT="singletrait"}#
+#
+		dirname= paste("../output/output",TREE, TRAIT, AXES ,sep="_")#
+		filename=paste(dirname,"/out","_", TRAIT, "_",AXES, sep="")#
+# get orig. tree#
+		origtree= read.nexus(paste("../input/",TREE,"_pruned_to_", TRAIT,"_", AXES,"_" ,"data_nexus.tre", sep=""))#
+		origtree= ladderize(origtree)#
+		treedat =read.table(paste(dirname,"/",TRAIT,"_" ,AXES,"_", "treedat_forPlot.txt", sep=""), h=T)#
+#
+if(any(origtree$edge != treedat[,2:3])) stop("tree is in the wrong order!")#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+#
+##########################################  get sigma per trait, need burnin and log file#
+#head(treedat)#
+####  assign colors#
+		treedat$LogRate = treedat$relRate#
+ 		colors = sapply(treedat$LogRate, whichColor, cols = myColors, breaks = breaks)#
+		print(range(treedat$LogRate))#
+		treedat$PP2=treedat$PP2*0.5#
+#
+		screen(pos[k])#
+		par(mar= c(0.25,0.25,0.25,0.25))#
+		plot.phylo(origtree,cex=0.5, edge.width =1 , type="fan", edge.color=colors, show.tip.label=F, 	open.angle=20, rotate.tree=20, no.margin=F)#
+		edgelabels(pch=19, cex=treedat$PP2, col = alpha("tomato", 0.4))#
+		mtext(paste(" ",AXES,sep=""), side=3, adj=1.1, padj=1.75)#
+#
+#	add.color.bar(leg=5, cols= myColors, titel="Relative rates", outline=F, lims=range(breaks), prompt=F, x=5, y=1.5, lwd=5 )#
+barlen=( 5/diff(range(breaks)))*diff(range(treedat$LogRate))#
+colforbar= myColors [myColors %in% colors]#
+colforbar2 = myColors[grep(colforbar[1], myColors):grep(colforbar[length(colforbar)], myColors)]#
+	add.color.bar(leg= barlen, cols= colforbar2, titel="Relative rates", outline=F, lims=range(treedat$LogRate), prompt=F, x=5, y=1.5, lwd=5 )#
+####   get  densities and maek 2d hist#
+#
+		den = read.table(paste(dirname, "/" ,"AncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), h=T)#
+		nbins = trunc(root/n)#
+		a = hist2d( den $sample, den $y3, nbins= nbins, axes=F, show=F)#
+		maxa = max(a$counts)#
+		tck = -0.02#
+		xlim=c(0-(root2-root),root2)#
+#
+		screen(pos[k]+1)#
+		par(mar=c(2,2,2,2))#
+		hm_col_scale = colorRampPalette(c( "grey80", "black"))(maxa)#
+		hm_col_scale2= c("white", hm_col_scale)#
+		hist2d( den $sample, den $y3, nbins= nbins, col= hm_col_scale2, axes=F, xlim=xlim)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, las=1, cex.axis=0.5, padj=-3)   ######  fitx this, axies is shifted (only raphically)#
+		axis(2, tck= tck, las=1, cex.axis=0.5,  mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		range= c(0:maxa)#
+		topl= matrix(rep(range, length(range)), length(range), length(range))#
+		par(mar=c(2.1,2.1,7,8), new=T)#
+		image(t(topl), col= hm_col_scale2, axes=F)#
+		##  for even#
+		if((maxa %% 2) == 0) {#
+			at=c((1/maxa),seq(0,1,by=2/maxa)[-1])#
+			label=c(1,seq(0, maxa, by=2)[-1])#
+		}#
+		##  for odd#
+		if((maxa %% 2) != 0) {#
+			at=c(seq(0+(1/(maxa)),1, 2/(maxa)))#
+			label=seq(1, maxa, by=2)#
+		}#
+		axis(4, at= at , label= label , las=1, line=-0.8, cex.axis=0.3, lwd=0)#
+#		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+#		load(paste(dirname, "stats_over_time_BM.Rdata", sep="/"))#
+		load(paste(dirname, "Diff_slope_to_sim_over_time.Rdata", sep="/"))#
+		cex.axis=0.5#
+		t1=Dif_slopeBMrange2[,1]#
+		Dif_slopeBMrange= Dif_slopeBMrange2[,-1]#
+#
+		MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+		###  get the timevector of the center of each sliding window#
+		###  calucualte teh 95% polygon#
+		f=nrow(Dif_slopeBMrange)#
+		dd=c(0.05/2, 1-0.05/2)#
+		tmp=sapply(1:f, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+		yy=c(tmp[1,], rev(tmp[2,]))#
+		xx=c(t1 , rev(t1))#
+		polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+		screen(pos[k]+2)#
+		par(mar=c(2,2,2,2))#
+#
+		ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+		screen(pos[k]+3)#
+		par(mar=c(2,2,2,2))#
+#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+		mean_rateTT= read.csv(paste(dirname, "/mean_rate_tt.csv", sep=""))#
+		CI_rateTT= read.csv(paste(dirname, "/SD_rate_tt.csv", sep=""))#
+		ylim= c(0, max(CI_rateTT[, "y"]) *1.25)#
+	#	ylim= c(0, max(rate95TT[, "y"]) *1.25)#
+		plot(mean_rateTT$v, mean_rateTT$mean_rate, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		polygon(CI_rateTT[, "x"], CI_rateTT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+	#	polygon(rate95TT[, "x"], rate95TT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		lines(mean_rateTT$v, mean_rateTT$mean_rate, type="l",col="deepskyblue4", lwd=1.5)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Relative rate of evolution", 2, line=1, cex=0.75)#
+		abline(h=1, col="grey", lty="dashed")#
+	}		#
+close.screen(all.screens=T)#
+dev.off()#
+#legend("topright", legend=c("> 50", "> 75", "> 90"), pch=19, col=alpha("tomato", 0.3), bty="n", cex= 1,pt.cex=c( 0.5, 1, 1.5) , title ="PP")
+TRAIT
+AXES
+TRAIT="PLS"
+AXES="oral"
+dirname
+dirname="../output/output_b2_PLS_oral/"
+burn=read.table(paste( dirname,  "additional_burnin.txt", sep=""), h=F)
+burnin=burn[1,1]
+trees1= read.nexus(paste(dirname,"out_",TRAIT,"_", AXES , ".Output.trees", sep=""))
+origtree=read.nexus("input/b2_pruned_to_PLS_oral_data_nexus.tre")
+origtree=read.nexus("../input/b2_pruned_to_PLS_oral_data_nexus.tre")
+if (burnin>=1) trees1 = trees1[seq.int(burnin+1, length(trees1), 1)]
+class(trees1) = "multiPhylo"
+if(any(trees1[[1]]$edge != origtree$edge)){stop("topology of reference tree is not the same as transformed tree")}
+out= matrix( NA, length(origtree$edge.length),length(trees1) )#
+for ( i in 1: dim(out)[2]) {#
+        out[,i] = trees1[[i]]$edge.length/ origtree$edge.length#
+}
+!is.ultrametric(origtree)
+is.ultrametric(origtree)
+origtree = force.ultrametric(origtree, method="nnls")
+origtree = ladderize(origtree)#
+trees1 = lapply(trees1, ladderize)#
+class(trees1) = "multiPhylo"
+if(any(trees1[[1]]$edge != origtree$edge)){stop("topology of reference tree is not the same as transformed tree")}
+origtree = force.ultrametric(origtree, method="nnls")#
+#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+#
+###. round down the root age to avoid problems with rounding artefacts#
+#root2= floor(root*100)/100#
+#
+##  define timeslices: start at the root and increas in 1.5 million years + additionally the tips#
+n= STEP#
+v= c(seq(from=0, to=root, by= n) , root)#
+#
+###  combine states of the nodes with nodeages#
+xx = node.depth.edgelength(origtree)  ### get age of each node
+Yt= matrix( NA,length(v) ,dim(out)[2])#
+for ( i in c(1: length(v)) ) {#
+        tmp.bayPC3 = intersect(which(H[,1]<= v[i] ), which( H[,2] >= v[i] ))  ###  get row number for the nodesHeights within root and timepoint  ---   get all edges crossing the timeslcie v:tips, but not ending before ( not adding nodes which are not present anymore)#
+        tmp_rates= out[tmp.bayPC3,]     ###  find those edges in the tree data:#
+        if (length(tmp.bayPC3)>=2) {#
+                Yt[i,] = apply( tmp_rates, 2, mean)#
+        } else {#
+                Yt[i,] = mean(tmp_rates)        #
+        }#
+}#
+###  calucualte the sd polygon#
+mean_rate= rowMeans(Yt, na.rm=T)#
+tmp=apply(Yt ,1, sd)#
+yy=c(mean_rate+tmp, rev(mean_rate-tmp))#
+xx=c(v , rev(v))#
+polySD =cbind(x=xx, y=yy)#
+mean_rates= cbind(v,mean_rate)
+plot(mean_rates)
+tmp=read.csv(paste(dirname,"mean_rate_tt.csv",sep=""))
+tmp
+lines(tmp)
+lines(mean_rates)
+root
+root2
+root2= floor(root*100)/100
+root2
+root2= floor(root*1000)/1000
+root2
+##  get variables from comand line#
+#
+TREE="b2"#
+#
+max.value=34 ##BEAST;#
+# load packages#
+require(phytools)#
+require(scales)#
+require(gplots)#
+TRAIT="PLS"#
+n= 0.15    ####  recunstructed in n timeinterval#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+####  make asymetric color ramp, centered in 1#
+ramp1 = colorRampPalette(c("blue","grey"))#
+ramp2 = colorRampPalette(c("grey","gold","tomato","red", "darkred", "#3D0404"))#
+#
+# now specify the range and the center value#
+ min.value=0; mid.value=1#
+#range(treedat$meanRate)#
+col_per_step=500/max.value#
+max.breaks = max.value - mid.value#
+min.breaks = mid.value - min.value#
+low.ramp = ramp1(min.breaks*(col_per_step))#
+high.ramp = ramp2(max.breaks*(col_per_step))#
+myColors= c(low.ramp, high.ramp)  #
+#
+#####. remove duplicates:#
+myColors=unique(myColors)#
+#
+# create breaks corresponding to the color ramp#
+breaks = 0:length(myColors)/length(myColors) * (max.value - min.value) + min.value#
+# make a function to assign colors from the palette with its breaks to the values you wanna plot#
+whichColor = function(p, cols, breaks) {#
+        i = 1#
+        while (p >= breaks[i] && p > breaks[i + 1]) i = i +1#
+        cols[i]#
+    }#
+###  open the pdf to write in all the plot parts#
+#
+quartz( width =8.3 , height=11.7 , type="pdf", file=paste("../output/",TRAIT,"_", TREE, "_all_traits_panel.pdf", sep=""))#
+split.screen(figs=c(5,4), erase=T)#
+	#AXLIST=read.table(paste("axlist_", TRAIT, ".txt", sep=""))#
+	AXLIST=as.data.frame(c("body", "oral", "LPJ"))#
+	pos=c(1,5,9,13)#
+k=1#
+	for ( k in 1: 4){#
+		if ( k !=4) AXES= as.character(AXLIST[k,1])#
+		if ( k ==4){ #
+			AXES= "color"#
+			TRAIT="singletrait"}#
+#
+		dirname= paste("../output/output",TREE, TRAIT, AXES ,sep="_")#
+		filename=paste(dirname,"/out","_", TRAIT, "_",AXES, sep="")#
+# get orig. tree#
+		origtree= read.nexus(paste("../input/",TREE,"_pruned_to_", TRAIT,"_", AXES,"_" ,"data_nexus.tre", sep=""))#
+		origtree= ladderize(origtree)#
+		treedat =read.table(paste(dirname,"/",TRAIT,"_" ,AXES,"_", "treedat_forPlot.txt", sep=""), h=T)#
+#
+if(any(origtree$edge != treedat[,2:3])) stop("tree is in the wrong order!")#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+#
+##########################################  get sigma per trait, need burnin and log file#
+#head(treedat)#
+####  assign colors#
+		treedat$LogRate = treedat$relRate#
+ 		colors = sapply(treedat$LogRate, whichColor, cols = myColors, breaks = breaks)#
+		print(range(treedat$LogRate))#
+		treedat$PP2=treedat$PP2*0.5#
+#
+		screen(pos[k])#
+		par(mar= c(0.25,0.25,0.25,0.25))#
+		plot.phylo(origtree,cex=0.5, edge.width =1 , type="fan", edge.color=colors, show.tip.label=F, 	open.angle=20, rotate.tree=20, no.margin=F)#
+		edgelabels(pch=19, cex=treedat$PP2, col = alpha("tomato", 0.4))#
+		mtext(paste(" ",AXES,sep=""), side=3, adj=1.1, padj=1.75)#
+#
+#	add.color.bar(leg=5, cols= myColors, titel="Relative rates", outline=F, lims=range(breaks), prompt=F, x=5, y=1.5, lwd=5 )#
+barlen=( 5/diff(range(breaks)))*diff(range(treedat$LogRate))#
+colforbar= myColors [myColors %in% colors]#
+colforbar2 = myColors[grep(colforbar[1], myColors):grep(colforbar[length(colforbar)], myColors)]#
+	add.color.bar(leg= barlen, cols= colforbar2, titel="Relative rates", outline=F, lims=range(treedat$LogRate), prompt=F, x=5, y=1.5, lwd=5 )#
+####   get  densities and maek 2d hist#
+#
+		den = read.table(paste(dirname, "/" ,"AncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), h=T)#
+		nbins = trunc(root/n)#
+		a = hist2d( den $sample, den $y3, nbins= nbins, axes=F, show=F)#
+		maxa = max(a$counts)#
+		tck = -0.02#
+		xlim=c(0-(root2-root),root2)#
+#
+		screen(pos[k]+1)#
+		par(mar=c(2,2,2,2))#
+		hm_col_scale = colorRampPalette(c( "grey80", "black"))(maxa)#
+		hm_col_scale2= c("white", hm_col_scale)#
+		hist2d( den $sample, den $y3, nbins= nbins, col= hm_col_scale2, axes=F, xlim=xlim)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, las=1, cex.axis=0.5, padj=-3)   ######  fitx this, axies is shifted (only raphically)#
+		axis(2, tck= tck, las=1, cex.axis=0.5,  mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		range= c(0:maxa)#
+		topl= matrix(rep(range, length(range)), length(range), length(range))#
+		par(mar=c(2.1,2.1,7,8), new=T)#
+		image(t(topl), col= hm_col_scale2, axes=F)#
+		##  for even#
+		if((maxa %% 2) == 0) {#
+			at=c((1/maxa),seq(0,1,by=2/maxa)[-1])#
+			label=c(1,seq(0, maxa, by=2)[-1])#
+		}#
+		##  for odd#
+		if((maxa %% 2) != 0) {#
+			at=c(seq(0+(1/(maxa)),1, 2/(maxa)))#
+			label=seq(1, maxa, by=2)#
+		}#
+		axis(4, at= at , label= label , las=1, line=-0.8, cex.axis=0.3, lwd=0)#
+#		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+#		load(paste(dirname, "stats_over_time_BM.Rdata", sep="/"))#
+		load(paste(dirname, "Diff_slope_to_sim_over_time.Rdata", sep="/"))#
+		cex.axis=0.5#
+		t1=Dif_slopeBMrange2[,1]#
+		Dif_slopeBMrange= Dif_slopeBMrange2[,-1]#
+#
+		MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+		###  get the timevector of the center of each sliding window#
+		###  calucualte teh 95% polygon#
+		f=nrow(Dif_slopeBMrange)#
+		dd=c(0.05/2, 1-0.05/2)#
+		tmp=sapply(1:f, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+		yy=c(tmp[1,], rev(tmp[2,]))#
+		xx=c(t1 , rev(t1))#
+		polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+		screen(pos[k]+2)#
+		par(mar=c(2,2,2,2))#
+#
+		ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+		screen(pos[k]+3)#
+		par(mar=c(2,2,2,2))#
+#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+		mean_rateTT= read.csv(paste(dirname, "/mean_rate_tt.csv", sep=""))#
+		CI_rateTT= read.csv(paste(dirname, "/SD_rate_tt.csv", sep=""))#
+		ylim= c(0, max(CI_rateTT[, "y"]) *1.25)#
+	#	ylim= c(0, max(rate95TT[, "y"]) *1.25)#
+		plot(mean_rateTT$v, mean_rateTT$mean_rate, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		polygon(CI_rateTT[, "x"], CI_rateTT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+	#	polygon(rate95TT[, "x"], rate95TT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		lines(mean_rateTT$v, mean_rateTT$mean_rate, type="l",col="deepskyblue4", lwd=1.5)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Relative rate of evolution", 2, line=1, cex=0.75)#
+		abline(h=1, col="grey", lty="dashed")#
+	}		#
+close.screen(all.screens=T)#
+dev.off()#
+#legend("topright", legend=c("> 50", "> 75", "> 90"), pch=19, col=alpha("tomato", 0.3), bty="n", cex= 1,pt.cex=c( 0.5, 1, 1.5) , title ="PP")
+root2
+root
+H
+root2= floor(root*1000)/1000
+root2
+v
+n= STEP
+v= c(seq(from=0, to=root, by= n) , root)
+v
+##  get variables from comand line#
+#
+TREE="b2"#
+#
+max.value=34 ##BEAST;#
+# load packages#
+require(phytools)#
+require(scales)#
+require(gplots)#
+TRAIT="PLS"#
+n= 0.15    ####  recunstructed in n timeinterval#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+####  make asymetric color ramp, centered in 1#
+ramp1 = colorRampPalette(c("blue","grey"))#
+ramp2 = colorRampPalette(c("grey","gold","tomato","red", "darkred", "#3D0404"))#
+#
+# now specify the range and the center value#
+ min.value=0; mid.value=1#
+#range(treedat$meanRate)#
+col_per_step=500/max.value#
+max.breaks = max.value - mid.value#
+min.breaks = mid.value - min.value#
+low.ramp = ramp1(min.breaks*(col_per_step))#
+high.ramp = ramp2(max.breaks*(col_per_step))#
+myColors= c(low.ramp, high.ramp)  #
+#
+#####. remove duplicates:#
+myColors=unique(myColors)#
+#
+# create breaks corresponding to the color ramp#
+breaks = 0:length(myColors)/length(myColors) * (max.value - min.value) + min.value#
+# make a function to assign colors from the palette with its breaks to the values you wanna plot#
+whichColor = function(p, cols, breaks) {#
+        i = 1#
+        while (p >= breaks[i] && p > breaks[i + 1]) i = i +1#
+        cols[i]#
+    }#
+###  open the pdf to write in all the plot parts#
+#
+quartz( width =8.3 , height=11.7 , type="pdf", file=paste("../output/",TRAIT,"_", TREE, "_all_traits_panel.pdf", sep=""))#
+split.screen(figs=c(5,4), erase=T)#
+	#AXLIST=read.table(paste("axlist_", TRAIT, ".txt", sep=""))#
+	AXLIST=as.data.frame(c("body", "oral", "LPJ"))#
+	pos=c(1,5,9,13)#
+k=1#
+	for ( k in 1: 4){#
+		if ( k !=4) AXES= as.character(AXLIST[k,1])#
+		if ( k ==4){ #
+			AXES= "color"#
+			TRAIT="singletrait"}#
+#
+		dirname= paste("../output/output",TREE, TRAIT, AXES ,sep="_")#
+		filename=paste(dirname,"/out","_", TRAIT, "_",AXES, sep="")#
+# get orig. tree#
+		origtree= read.nexus(paste("../input/",TREE,"_pruned_to_", TRAIT,"_", AXES,"_" ,"data_nexus.tre", sep=""))#
+		origtree= ladderize(origtree)#
+		treedat =read.table(paste(dirname,"/",TRAIT,"_" ,AXES,"_", "treedat_forPlot.txt", sep=""), h=T)#
+#
+if(any(origtree$edge != treedat[,2:3])) stop("tree is in the wrong order!")#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+#
+##########################################  get sigma per trait, need burnin and log file#
+#head(treedat)#
+####  assign colors#
+		treedat$LogRate = treedat$relRate#
+ 		colors = sapply(treedat$LogRate, whichColor, cols = myColors, breaks = breaks)#
+		print(range(treedat$LogRate))#
+		treedat$PP2=treedat$PP2*0.5#
+#
+		screen(pos[k])#
+		par(mar= c(0.25,0.25,0.25,0.25))#
+		plot.phylo(origtree,cex=0.5, edge.width =1 , type="fan", edge.color=colors, show.tip.label=F, 	open.angle=20, rotate.tree=20, no.margin=F)#
+		edgelabels(pch=19, cex=treedat$PP2, col = alpha("tomato", 0.4))#
+		mtext(paste(" ",AXES,sep=""), side=3, adj=1.1, padj=1.75)#
+#
+#	add.color.bar(leg=5, cols= myColors, titel="Relative rates", outline=F, lims=range(breaks), prompt=F, x=5, y=1.5, lwd=5 )#
+barlen=( 5/diff(range(breaks)))*diff(range(treedat$LogRate))#
+colforbar= myColors [myColors %in% colors]#
+colforbar2 = myColors[grep(colforbar[1], myColors):grep(colforbar[length(colforbar)], myColors)]#
+	add.color.bar(leg= barlen, cols= colforbar2, titel="Relative rates", outline=F, lims=range(treedat$LogRate), prompt=F, x=5, y=1.5, lwd=5 )#
+####   get  densities and maek 2d hist#
+#
+		den = read.table(paste(dirname, "/" ,"AncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), h=T)#
+		nbins = trunc(root/n)#
+		a = hist2d( den $sample, den $y3, nbins= nbins, axes=F, show=F)#
+		maxa = max(a$counts)#
+		tck = -0.02#
+		xlim=c(0-(root2-root),root2)#
+#
+		screen(pos[k]+1)#
+		par(mar=c(2,2,2,2))#
+		hm_col_scale = colorRampPalette(c( "grey80", "black"))(maxa)#
+		hm_col_scale2= c("white", hm_col_scale)#
+		hist2d( den $sample, den $y3, nbins= nbins, col= hm_col_scale2, axes=F, xlim=xlim)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, las=1, cex.axis=0.5, padj=-3)   ######  fitx this, axies is shifted (only raphically)#
+		axis(2, tck= tck, las=1, cex.axis=0.5,  mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		range= c(0:maxa)#
+		topl= matrix(rep(range, length(range)), length(range), length(range))#
+		par(mar=c(2.1,2.1,7,8), new=T)#
+		image(t(topl), col= hm_col_scale2, axes=F)#
+		##  for even#
+		if((maxa %% 2) == 0) {#
+			at=c((1/maxa),seq(0,1,by=2/maxa)[-1])#
+			label=c(1,seq(0, maxa, by=2)[-1])#
+		}#
+		##  for odd#
+		if((maxa %% 2) != 0) {#
+			at=c(seq(0+(1/(maxa)),1, 2/(maxa)))#
+			label=seq(1, maxa, by=2)#
+		}#
+		axis(4, at= at , label= label , las=1, line=-0.8, cex.axis=0.3, lwd=0)#
+#		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+#		load(paste(dirname, "stats_over_time_BM.Rdata", sep="/"))#
+		load(paste(dirname, "Diff_slope_to_sim_over_time.Rdata", sep="/"))#
+		cex.axis=0.5#
+		t1=Dif_slopeBMrange2[,1]#
+		Dif_slopeBMrange= Dif_slopeBMrange2[,-1]#
+#
+		MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+		###  get the timevector of the center of each sliding window#
+		###  calucualte teh 95% polygon#
+		f=nrow(Dif_slopeBMrange)#
+		dd=c(0.05/2, 1-0.05/2)#
+		tmp=sapply(1:f, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+		yy=c(tmp[1,], rev(tmp[2,]))#
+		xx=c(t1 , rev(t1))#
+		polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+		screen(pos[k]+2)#
+		par(mar=c(2,2,2,2))#
+#
+		ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+		screen(pos[k]+3)#
+		par(mar=c(2,2,2,2))#
+#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+		mean_rateTT= read.csv(paste(dirname, "/mean_rate_tt.csv", sep=""))#
+		CI_rateTT= read.csv(paste(dirname, "/SD_rate_tt.csv", sep=""))#
+		ylim= c(0, max(CI_rateTT[, "y"]) *1.25)#
+	#	ylim= c(0, max(rate95TT[, "y"]) *1.25)#
+		plot(mean_rateTT$v, mean_rateTT$mean_rate, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		polygon(CI_rateTT[, "x"], CI_rateTT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+	#	polygon(rate95TT[, "x"], rate95TT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		lines(mean_rateTT$v, mean_rateTT$mean_rate, type="l",col="deepskyblue4", lwd=1.5)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Relative rate of evolution", 2, line=1, cex=0.75)#
+		abline(h=1, col="grey", lty="dashed")#
+	}		#
+close.screen(all.screens=T)#
+dev.off()#
+#legend("topright", legend=c("> 50", "> 75", "> 90"), pch=19, col=alpha("tomato", 0.3), bty="n", cex= 1,pt.cex=c( 0.5, 1, 1.5) , title ="PP")
+##  get variables from comand line#
+#
+TREE="b1"#
+TRAIT="PLS"#
+n= 0.15    ####  recunstructed in n timeinterval#
+#
+max.value=37 ##BEAST;#
+# load packages#
+require(phytools)#
+require(scales)#
+require(gplots)#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+####  make asymetric color ramp, centered in 1#
+ramp1 = colorRampPalette(c("blue","grey"))#
+ramp2 = colorRampPalette(c("grey","gold","tomato","red", "darkred", "#3D0404"))#
+#
+# now specify the range and the center value#
+ min.value=0; mid.value=1#
+#range(treedat$meanRate)#
+col_per_step=500/max.value#
+max.breaks = max.value - mid.value#
+min.breaks = mid.value - min.value#
+low.ramp = ramp1(min.breaks*(col_per_step))#
+high.ramp = ramp2(max.breaks*(col_per_step))#
+myColors= c(low.ramp, high.ramp)  #
+#
+#####. remove duplicates:#
+myColors=unique(myColors)#
+#
+# create breaks corresponding to the color ramp#
+breaks = 0:length(myColors)/length(myColors) * (max.value - min.value) + min.value#
+# make a function to assign colors from the palette with its breaks to the values you wanna plot#
+whichColor = function(p, cols, breaks) {#
+        i = 1#
+        while (p >= breaks[i] && p > breaks[i + 1]) i = i +1#
+        cols[i]#
+    }#
+###  open the pdf to write in all the plot parts#
+#
+quartz( width =8.3 , height=11.7 , type="pdf", file=paste("../output/",TRAIT,"_", TREE, "_all_traits_panel.pdf", sep=""))#
+split.screen(figs=c(5,4), erase=T)#
+	#AXLIST=read.table(paste("axlist_", TRAIT, ".txt", sep=""))#
+	AXLIST=as.data.frame(c("body", "oral", "LPJ"))#
+	pos=c(1,5,9,13)#
+k=2#
+	for ( k in 1: 4){#
+		if ( k !=4) AXES= as.character(AXLIST[k,1])#
+		if ( k ==4){ #
+			AXES= "color"#
+			TRAIT="singletrait"}#
+#
+		dirname= paste("../output/output",TREE, TRAIT, AXES ,sep="_")#
+		filename=paste(dirname,"/out","_", TRAIT, "_",AXES, sep="")#
+# get orig. tree#
+		origtree= read.nexus(paste("../input/",TREE,"_pruned_to_", TRAIT,"_", AXES,"_" ,"data_nexus.tre", sep=""))#
+		origtree= ladderize(origtree)#
+		treedat =read.table(paste(dirname,"/",TRAIT,"_" ,AXES,"_", "treedat_forPlot.txt", sep=""), h=T)#
+#
+if(any(origtree$edge != treedat[,2:3])) stop("tree is in the wrong order!")#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+#
+##########################################  get sigma per trait, need burnin and log file#
+#head(treedat)#
+####  assign colors#
+		treedat$LogRate = treedat$relRate#
+ 		colors = sapply(treedat$LogRate, whichColor, cols = myColors, breaks = breaks)#
+		print(range(treedat$LogRate))#
+		treedat$PP2=treedat$PP2*0.5#
+#
+		screen(pos[k])#
+		par(mar= c(0.25,0.25,0.25,0.25))#
+		plot.phylo(origtree,cex=0.5, edge.width =1 , type="fan", edge.color=colors, show.tip.label=F, 	open.angle=20, rotate.tree=20, no.margin=F)#
+		edgelabels(pch=19, cex=treedat$PP2, col = alpha("tomato", 0.4))#
+		mtext(paste(" ",AXES,sep=""), side=3, adj=1.1, padj=1.75)#
+#
+#	add.color.bar(leg=5, cols= myColors, titel="Relative rates", outline=F, lims=range(breaks), prompt=F, x=5, y=1.5, lwd=5 )#
+barlen=( 5/diff(range(breaks)))*diff(range(treedat$LogRate))#
+colforbar= myColors [myColors %in% colors]#
+#
+mincol=grep(colforbar[1], myColors)#
+maxcol=grep(colforbar[length(colforbar)], myColors)#
+colforbar2 = myColors[mincol: maxcol]#
+	add.color.bar(leg= barlen, cols= colforbar2, titel="Relative rates", outline=F, lims=range(treedat$LogRate), prompt=F, x=5, y=1.5, lwd=5 )#
+####   get  densities and maek 2d hist#
+#
+		den = read.table(paste(dirname, "/" ,"AncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), h=T)#
+		nbins = trunc(root/n)#
+		a = hist2d( den $sample, den $y3, nbins= nbins, axes=F, show=F)#
+		maxa = max(a$counts)#
+		tck = -0.02#
+		xlim=c(0-(root2-root),root2)#
+#
+		screen(pos[k]+1)#
+		par(mar=c(2,2,2,2))#
+		hm_col_scale = colorRampPalette(c( "grey80", "black"))(maxa)#
+		hm_col_scale2= c("white", hm_col_scale)#
+		hist2d( den $sample, den $y3, nbins= nbins, col= hm_col_scale2, axes=F, xlim=xlim)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, las=1, cex.axis=0.5, padj=-3)   ######  fitx this, axies is shifted (only raphically)#
+		axis(2, tck= tck, las=1, cex.axis=0.5,  mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		range= c(0:maxa)#
+		topl= matrix(rep(range, length(range)), length(range), length(range))#
+		par(mar=c(2.1,2.1,7,8), new=T)#
+		image(t(topl), col= hm_col_scale2, axes=F)#
+		##  for even#
+		if((maxa %% 2) == 0) {#
+			at=c((1/maxa),seq(0,1,by=2/maxa)[-1])#
+			label=c(1,seq(0, maxa, by=2)[-1])#
+		}#
+		##  for odd#
+		if((maxa %% 2) != 0) {#
+			at=c(seq(0+(1/(maxa)),1, 2/(maxa)))#
+			label=seq(1, maxa, by=2)#
+		}#
+		axis(4, at= at , label= label , las=1, line=-0.8, cex.axis=0.3, lwd=0)#
+#		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+#		load(paste(dirname, "stats_over_time_BM.Rdata", sep="/"))#
+		load(paste(dirname, "Diff_slope_to_sim_over_time.Rdata", sep="/"))#
+		cex.axis=0.5#
+		t1=Dif_slopeBMrange2[,1]#
+		Dif_slopeBMrange= Dif_slopeBMrange2[,-1]#
+#
+		MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+		###  get the timevector of the center of each sliding window#
+		###  calucualte teh 95% polygon#
+		f=nrow(Dif_slopeBMrange)#
+		dd=c(0.05/2, 1-0.05/2)#
+		tmp=sapply(1:f, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+		yy=c(tmp[1,], rev(tmp[2,]))#
+		xx=c(t1 , rev(t1))#
+		polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+		screen(pos[k]+2)#
+		par(mar=c(2,2,2,2))#
+#
+		ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+		screen(pos[k]+3)#
+		par(mar=c(2,2,2,2))#
+#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), axes=F, xlab="", ylab="", xlim=xlim)#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+		mean_rateTT= read.csv(paste(dirname, "/mean_rate_tt.csv", sep=""))#
+		CI_rateTT= read.csv(paste(dirname, "/SD_rate_tt.csv", sep=""))#
+		ylim= c(0, max(CI_rateTT[, "y"]) *1.25)#
+	#	ylim= c(0, max(rate95TT[, "y"]) *1.25)#
+		plot(mean_rateTT$v, mean_rateTT$mean_rate, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		polygon(CI_rateTT[, "x"], CI_rateTT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+	#	polygon(rate95TT[, "x"], rate95TT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		lines(mean_rateTT$v, mean_rateTT$mean_rate, type="l",col="deepskyblue4", lwd=1.5)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Relative rate of evolution", 2, line=1, cex=0.75)#
+		abline(h=1, col="grey", lty="dashed")#
+	}		#
+close.screen(all.screens=T)#
+dev.off()#
+#legend("topright", legend=c("> 50", "> 75", "> 90"), pch=19, col=alpha("tomato", 0.3), bty="n", cex= 1,pt.cex=c( 0.5, 1, 1.5) , title ="PP")
+##  get variables from comand line#
+#
+TREE="b1"#
+#
+max.value=40.5 ##BEAST;#
+# load packages#
+require(phytools)#
+require(BTprocessR)#
+require(scales)#
+require(gplots)#
+TRAIT="PCA"#
+n= 0.15    ####  recunstructed in n timeinterval#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+####  make asymetric color ramp, centered in 1#
+ramp1 = colorRampPalette(c("blue","grey"))#
+ramp2 = colorRampPalette(c("grey","gold","tomato","red", "darkred", "#3D0404"))#
+#
+# now specify the range and the center value#
+ min.value=0; mid.value=1#
+#range(treedat$meanRate)#
+col_per_step=500/max.value#
+max.breaks = max.value - mid.value#
+min.breaks = mid.value - min.value#
+low.ramp = ramp1(min.breaks*(col_per_step))#
+high.ramp = ramp2(max.breaks*(col_per_step))#
+myColors= c(low.ramp, high.ramp)  #
+#
+#####. remove duplicates:#
+myColors=unique(myColors)#
+#
+# create breaks corresponding to the color ramp#
+breaks = 0:length(myColors)/length(myColors) * (max.value - min.value) + min.value#
+# make a function to assign colors from the palette with its breaks to the values you wanna plot#
+whichColor = function(p, cols, breaks) {#
+        i = 1#
+        while (p >= breaks[i] && p > breaks[i + 1]) i = i +1#
+        cols[i]#
+    }#
+###  open the pdf to write in all the plot parts#
+#
+quartz( width =8.3 , height=11.7 , type="pdf", file=paste("../output/",TRAIT,"_", TREE, "_all_traits_panel_PC1.pdf", sep=""))#
+split.screen(figs=c(5,4), erase=T)#
+	#AXLIST=read.table(paste("axlist_", TRAIT, ".txt", sep=""))#
+	AXLIST=as.data.frame(c("body1", "oral1", "LPJ1"))#
+	pos=c(1,5,9,13)#
+#
+	for ( k in 1: 3){#
+#
+		AXES= as.character(AXLIST[k,1])#
+		dirname= paste("../output/output",TREE, TRAIT, AXES ,sep="_")#
+		filename=paste(dirname,"/out","_", TRAIT, "_",AXES, sep="")#
+#
+#setwd(paste("~/Desktop/BayesTrait/FinalRuns/", dirname, sep=""))#
+# get orig. tree#
+		origtree= read.nexus(paste("../input/",TREE,"_pruned_to_", TRAIT,"_", AXES,"_" ,"data_nexus.tre", sep=""))#
+		origtree= ladderize(origtree)#
+		treedat =read.table(paste(dirname,"/", TRAIT,"_" ,AXES,"_", "treedat_forPlot.txt", sep=""), h=T)#
+#
+if(any(origtree$edge != treedat[,2:3])) stop("tree is in the wrong order!")#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+#
+##########################################  get sigma per trait, need burnin and log file#
+#head(treedat)#
+####  assign colors#
+		treedat$LogRate = treedat$relRate#
+ 		colors = sapply(treedat$LogRate, whichColor, cols = myColors, breaks = breaks)#
+ 		print(range(treedat$LogRate))#
+		treedat$PP2=treedat$PP2*0.5#
+#
+		screen(pos[k])#
+		par(mar= c(0.25,0.25,0.25,0.25))#
+		plot.phylo(origtree,cex=0.5, edge.width =1 , type="fan", edge.color=colors, show.tip.label=F, 	open.angle=20, rotate.tree=20, no.margin=F)#
+		edgelabels(pch=19, cex=treedat$PP2, col = alpha("tomato", 0.4))#
+		mtext(paste(" ",AXES,sep=""), side=3, adj=1.1, padj=1.75)#
+#
+#	add.color.bar(leg=5, cols= myColors, titel="Relative rates", outline=F, lims=range(breaks), prompt=F, x=5, y=1.5, lwd=5 )#
+barlen=( 5/diff(range(breaks)))*diff(range(treedat$LogRate))#
+colforbar= myColors [myColors %in% colors]#
+colforbar2 = myColors[grep(colforbar[1], myColors):grep(colforbar[length(colforbar)], myColors)]#
+	add.color.bar(leg= barlen, cols= colforbar2, titel="Relative rates", outline=F, lims=range(treedat$LogRate), prompt=F, x=5, y=1.5, lwd=5 )#
+####   get  densities and maek 2d hist#
+#
+		den = read.table(paste(dirname, "/" ,"AncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), h=T)#
+		nbins = trunc(root/n)#
+		a = hist2d( den $sample, den $y3, nbins= nbins, axes=F, show=F)#
+		maxa = max(a$counts)#
+		tck = -0.02#
+		xlim=c(0-(root2-root),root2)#
+#
+		screen(pos[k]+1)#
+		par(mar=c(2,2,2,2))#
+		hm_col_scale = colorRampPalette(c( "grey80", "black"))(maxa)#
+		hm_col_scale2= c("white", hm_col_scale)#
+		hist2d( den $sample, den $y3, nbins= nbins, col= hm_col_scale2, axes=F, xlim=xlim)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, las=1, cex.axis=0.5, padj=-3)   ######  fitx this, axies is shifted (only raphically)#
+		axis(2, tck= tck, las=1, cex.axis=0.5,  mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		range= c(0:maxa)#
+		topl= matrix(rep(range, length(range)), length(range), length(range))#
+		par(mar=c(2.1,2.1,7,8), new=T)#
+		image(t(topl), col= hm_col_scale2, axes=F)#
+		##  for even#
+		if((maxa %% 2) == 0) {#
+			at=c((1/maxa),seq(0,1,by=2/maxa)[-1])#
+			label=c(1,seq(0, maxa, by=2)[-1])#
+		}#
+		##  for odd#
+		if((maxa %% 2) != 0) {#
+			at=c(seq(0+(1/(maxa)),1, 2/(maxa)))#
+			label=seq(1, maxa, by=2)#
+		}#
+		axis(4, at= at , label= label , las=1, line=-0.8, cex.axis=0.3, lwd=0)#
+#		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+#		load(paste(dirname, "stats_over_time_BM.Rdata", sep="/"))#
+		load(paste(dirname, "Diff_slope_to_sim_over_time.Rdata", sep="/"))#
+		cex.axis=0.5#
+		t1=Dif_slopeBMrange2[,1]#
+		Dif_slopeBMrange= Dif_slopeBMrange2[,-1]#
+#
+		MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+		###  get the timevector of the center of each sliding window#
+		###  calucualte teh 95% polygon#
+		f=nrow(Dif_slopeBMrange)#
+		dd=c(0.05/2, 1-0.05/2)#
+		tmp=sapply(1:f, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+		yy=c(tmp[1,], rev(tmp[2,]))#
+		xx=c(t1 , rev(t1))#
+		polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+		screen(pos[k]+2)#
+		par(mar=c(2,2,2,2))#
+#
+		ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), xlim=xlim, axes=F, xlab="", ylab="")#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+		screen(pos[k]+3)#
+		par(mar=c(2,2,2,2))#
+#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), xlim=xlim, axes=F, xlab="", ylab="")#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+		mean_rateTT= read.csv(paste(dirname, "/mean_rate_tt.csv", sep=""))#
+		CI_rateTT= read.csv(paste(dirname, "/SD_rate_tt.csv", sep=""))#
+		ylim= c(0, max(CI_rateTT[, "y"]) *1.25)#
+	#	ylim= c(0, max(rate95TT[, "y"]) *1.25)#
+		plot(mean_rateTT$v, mean_rateTT$mean_rate, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		polygon(CI_rateTT[, "x"], CI_rateTT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+	#	polygon(rate95TT[, "x"], rate95TT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		lines(mean_rateTT$v, mean_rateTT$mean_rate, type="l",col="deepskyblue4", lwd=1.5)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Relative rate of evolution", 2, line=1, cex=0.75)#
+		abline(h=1, col="grey", lty="dashed")#
+	}		#
+close.screen(all.screens=T)#
+dev.off()#
+#legend("topright", legend=c("> 50", "> 75", "> 90"), pch=19, col=alpha("tomato", 0.3), bty="n", cex= 1,pt.cex=c( 0.5, 1, 1.5) , title ="PP")
+##  get variables from comand line#
+#
+TREE="b1"#
+#
+max.value=22 ##BEAST;#
+# load packages#
+require(phytools)#
+require(scales)#
+require(gplots)#
+TRAIT="PCA"#
+n= 0.15    ####  recunstructed in n timeinterval#
+#####--------  make function for normalization#
+normalize = function(x){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}#
+####  make asymetric color ramp, centered in 1#
+ramp1 = colorRampPalette(c("blue","grey"))#
+ramp2 = colorRampPalette(c("grey","gold","tomato","red", "darkred", "#3D0404"))#
+#
+# now specify the range and the center value#
+ min.value=0; mid.value=1#
+#range(treedat$meanRate)#
+col_per_step=500/max.value#
+max.breaks = max.value - mid.value#
+min.breaks = mid.value - min.value#
+low.ramp = ramp1(min.breaks*(col_per_step))#
+high.ramp = ramp2(max.breaks*(col_per_step))#
+myColors= c(low.ramp, high.ramp)  #
+#
+#####. remove duplicates:#
+myColors=unique(myColors)#
+#
+# create breaks corresponding to the color ramp#
+breaks = 0:length(myColors)/length(myColors) * (max.value - min.value) + min.value#
+# make a function to assign colors from the palette with its breaks to the values you wanna plot#
+whichColor = function(p, cols, breaks) {#
+        i = 1#
+        while (p >= breaks[i] && p > breaks[i + 1]) i = i +1#
+        cols[i]#
+    }#
+###  open the pdf to write in all the plot parts#
+#
+quartz( width =8.3 , height=11.7 , type="pdf", file=paste("../output/",TRAIT,"_", TREE, "_all_traits_panel_PC2s.pdf", sep=""))#
+split.screen(figs=c(5,4), erase=T)#
+	#AXLIST=read.table(paste("axlist_", TRAIT, ".txt", sep=""))#
+	AXLIST=as.data.frame(c("body2", "oral2", "LPJ2"))#
+	pos=c(1,5,9,13)#
+#
+	for ( k in 1: 3){#
+#
+		AXES= as.character(AXLIST[k,1])#
+		dirname= paste("../output/output",TREE, TRAIT, AXES ,sep="_")#
+		filename=paste(dirname,"/out","_", TRAIT, "_",AXES, sep="")#
+#
+#setwd(paste("~/Desktop/BayesTrait/FinalRuns/", dirname, sep=""))#
+# get orig. tree#
+		origtree= read.nexus(paste("../input/",TREE,"_pruned_to_", TRAIT,"_", AXES,"_" ,"data_nexus.tre", sep=""))#
+		origtree= ladderize(origtree)#
+		treedat =read.table(paste(dirname,"/", TRAIT,"_" ,AXES,"_", "treedat_forPlot.txt", sep=""), h=T)#
+#
+if(any(origtree$edge != treedat[,2:3])) stop("tree is in the wrong order!")#
+H = nodeHeights(origtree)  ### get age of each node#
+root=max(H[,2]) ##   get age of the root  ]]#
+root2=ceiling(root)#
+#
+##########################################  get sigma per trait, need burnin and log file#
+#head(treedat)#
+####  assign colors#
+		treedat$LogRate = treedat$relRate#
+ 		colors = sapply(treedat$LogRate, whichColor, cols = myColors, breaks = breaks)#
+ 		print(range(treedat$LogRate))#
+		treedat$PP2=treedat$PP2*0.5#
+#
+		screen(pos[k])#
+		par(mar= c(0.25,0.25,0.25,0.25))#
+		plot.phylo(origtree,cex=0.5, edge.width =1 , type="fan", edge.color=colors, show.tip.label=F, 	open.angle=20, rotate.tree=20, no.margin=F)#
+		edgelabels(pch=19, cex=treedat$PP2, col = alpha("tomato", 0.4))#
+		mtext(paste(" ",AXES,sep=""), side=3, adj=1.1, padj=1.75)#
+#
+#	add.color.bar(leg=5, cols= myColors, titel="Relative rates", outline=F, lims=range(breaks), prompt=F, x=5, y=1.5, lwd=5 )#
+barlen=( 5/diff(range(breaks)))*diff(range(treedat$LogRate))#
+colforbar= myColors [myColors %in% colors]#
+colforbar2 = myColors[grep(colforbar[1], myColors):grep(colforbar[length(colforbar)], myColors)]#
+	add.color.bar(leg= barlen, cols= colforbar2, titel="Relative rates", outline=F, lims=range(treedat$LogRate), prompt=F, x=5, y=1.5, lwd=5 )#
+####   get  densities and maek 2d hist#
+#
+		den = read.table(paste(dirname, "/" ,"AncRec_sampled_by_",n, "_", TRAIT, "_", AXES, ".txt", sep=""), h=T)#
+		nbins = trunc(root/n)#
+		a = hist2d( den $sample, den $y3, nbins= nbins, axes=F, show=F)#
+		maxa = max(a$counts)#
+		tck = -0.02#
+		xlim=c(0-(root2-root),root2)#
+#
+		screen(pos[k]+1)#
+		par(mar=c(2,2,2,2))#
+		hm_col_scale = colorRampPalette(c( "grey80", "black"))(maxa)#
+		hm_col_scale2= c("white", hm_col_scale)#
+		hist2d( den $sample, den $y3, nbins= nbins, col= hm_col_scale2, axes=F, xlim=xlim)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, las=1, cex.axis=0.5, padj=-3)   ######  fitx this, axies is shifted (only raphically)#
+		axis(2, tck= tck, las=1, cex.axis=0.5,  mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		range= c(0:maxa)#
+		topl= matrix(rep(range, length(range)), length(range), length(range))#
+		par(mar=c(2.1,2.1,7,8), new=T)#
+		image(t(topl), col= hm_col_scale2, axes=F)#
+		##  for even#
+		if((maxa %% 2) == 0) {#
+			at=c((1/maxa),seq(0,1,by=2/maxa)[-1])#
+			label=c(1,seq(0, maxa, by=2)[-1])#
+		}#
+		##  for odd#
+		if((maxa %% 2) != 0) {#
+			at=c(seq(0+(1/(maxa)),1, 2/(maxa)))#
+			label=seq(1, maxa, by=2)#
+		}#
+		axis(4, at= at , label= label , las=1, line=-0.8, cex.axis=0.3, lwd=0)#
+#		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+#		load(paste(dirname, "stats_over_time_BM.Rdata", sep="/"))#
+		load(paste(dirname, "Diff_slope_to_sim_over_time.Rdata", sep="/"))#
+		cex.axis=0.5#
+		t1=Dif_slopeBMrange2[,1]#
+		Dif_slopeBMrange= Dif_slopeBMrange2[,-1]#
+#
+		MEAN_DIF_SLOPE_RANGE=apply(Dif_slopeBMrange, 1, mean)#
+		###  get the timevector of the center of each sliding window#
+		###  calucualte teh 95% polygon#
+		f=nrow(Dif_slopeBMrange)#
+		dd=c(0.05/2, 1-0.05/2)#
+		tmp=sapply(1:f, function(x) quantile(Dif_slopeBMrange[x,], probs=dd, na.rm=TRUE))#
+		yy=c(tmp[1,], rev(tmp[2,]))#
+		xx=c(t1 , rev(t1))#
+		polyRANG_E_RANGE =cbind(x=xx, y=yy)#
+		screen(pos[k]+2)#
+		par(mar=c(2,2,2,2))#
+#
+		ylim= range(c(polyRANG_E_RANGE[, "y"], polyRANG_E_RANGE[, "y"] )*1.25)#
+		load(paste(dirname, "stats_over_time_observed.Rdata", sep="/"))#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), xlim=xlim, axes=F, xlab="", ylab="")#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+#
+		plot(t1, MEAN_DIF_SLOPE_RANGE, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		axis(1, at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))),tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		polygon(polyRANG_E_RANGE[, "x"], polyRANG_E_RANGE[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		abline(h=0, col="grey", lty="dashed")#
+		lines(t1, MEAN_DIF_SLOPE_RANGE, type="l",col="deepskyblue4", lwd=1.5)#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Difference in slope \n(observed - BM)", 2, line=1, cex=0.75)#
+		screen(pos[k]+3)#
+		par(mar=c(2,2,2,2))#
+#
+		plot(statsOtime$time, statsOtime$numLineages/ max(statsOtime$numLineages)*100, col="grey30" , lwd=1.5, type="l", ylim=c(0,100), xlim=xlim, axes=F, xlab="", ylab="")#
+		axis(4, at=c(seq(0,100,20)), labels= c(seq(0,100,20)), las=1,cex.axis= cex.axis , col="grey30",tck= tck)#
+		par(new = TRUE)#
+		mean_rateTT= read.csv(paste(dirname, "/mean_rate_tt.csv", sep=""))#
+		CI_rateTT= read.csv(paste(dirname, "/SD_rate_tt.csv", sep=""))#
+		ylim= c(0, max(CI_rateTT[, "y"]) *1.25)#
+	#	ylim= c(0, max(rate95TT[, "y"]) *1.25)#
+		plot(mean_rateTT$v, mean_rateTT$mean_rate, ylim=ylim,xlim=xlim ,t="n", axes=F, xlab="", ylab="")#
+		polygon(CI_rateTT[, "x"], CI_rateTT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+	#	polygon(rate95TT[, "x"], rate95TT[, "y"], col = alpha("deepskyblue4",0.2), border = NA)#
+		lines(mean_rateTT$v, mean_rateTT$mean_rate, type="l",col="deepskyblue4", lwd=1.5)#
+		axis(1,at= rev(root2- c(seq(0, root2, 1)))-(root2-root), rev(c(seq(0, root2, 1))), tck= tck, cex.axis= cex.axis, padj=-3)#
+		axis(2, tck= tck, las=1, cex.axis= cex.axis, mgp=c(3, 0.3, 0))#
+		mtext("Time (Ma)", 1, line=1.4, cex=0.75)#
+		mtext("Relative rate of evolution", 2, line=1, cex=0.75)#
+		abline(h=1, col="grey", lty="dashed")#
+	}		#
+close.screen(all.screens=T)#
+dev.off()#
+#legend("topright", legend=c("> 50", "> 75", "> 90"), pch=19, col=alpha("tomato", 0.3), bty="n", cex= 1,pt.cex=c( 0.5, 1, 1.5) , title ="PP")
+niter= 10000#
+ncores= 4#
+options(mc.cores=4)
+require(geiger)#
+require(phytools)#
+require(parallel)
+tree = read.tree("../input/b1_prunded_to_body_shape_data.tre")
+tree = read.tree("../input/b1_pruned_to_PLS_body_data_nexus.tre")
+tree = read.nexus("../input/b1_pruned_to_PLS_body_data_nexus.tre")
+if( !is.ultrametric(tree))#
+	tree= force.ultrametric(tree, method="nnls")
+d= read.table("../input/PLS_body.txt", h=F)
+if ( any(! d[,1] %in% tree$tip.label)) { stop( "not all taxa from data occure in the tree" )}#
+if ( any(! tree$tip.label %in% d[,1] )) { stop( "not all taxa from the tree occure in data" )}
+cat("\n\n################ ################ ################ ################ ################ ################\n")#
+#
+cat("\n################ ################ ################ ################ ################ ################")#
+cat("\n\n\n\t\t\t\t***  fitting singel process models of trait evolution using geiger::fitContinuous and compare results",""," *** \n",sep="") #
+cat("################ ################ ################ ################ ################ ################")#
+cat( "\n\n")#
+cat("niter = ");cat(niter) #
+cat( "\n\n")
+x= d[,2]; names(x)= d[,1]
+summaries=c("BM", "Ornstein-Uhlenbeck", "early burst")#
+aic=matrix( NA ,1, length( summaries))#
+lnl=matrix(NA,  1,length( summaries))
+cat("\n\n\n\t\t\t\t***  BM model  *** \n\n",sep="")#
+BM= 	fitContinuous(tree, x, model="BM", SE= 0, ncores= ncores, control=list(niter=niter))#
+print(BM)
+cat("\n\n\n\t\t\t\t*** EB model  *** \n\n")
+EB= 	fitContinuous(tree, x, model="EB", SE= 0, ncores= ncores, control=list(niter= niter))
+print(EB)
+tree = read.nexus("../input/b2_pruned_to_PLS_body_data_nexus.tre")#
+tree= read.nexus(args[1])#
+#
+if( !is.ultrametric(tree))#
+	tree= force.ultrametric(tree, method="nnls")#
+#
+# get data:#
+#d= read.table("../input/PLS_body.txt", h=F)#
+d= read.table(args[2], h=F)#
+#
+################  recheck data concruence  ################ #
+#
+if ( any(! d[,1] %in% tree$tip.label)) { stop( "not all taxa from data occure in the tree" )}#
+if ( any(! tree$tip.label %in% d[,1] )) { stop( "not all taxa from the tree occure in data" )}
+d= read.table("../input/PLS_body.txt", h=F)
+if ( any(! d[,1] %in% tree$tip.label)) { stop( "not all taxa from data occure in the tree" )}#
+if ( any(! tree$tip.label %in% d[,1] )) { stop( "not all taxa from the tree occure in data" )}#
+#
+################ ################ ################ #
+cat("\n\n################ ################ ################ ################ ################ ################\n")#
+#
+cat("\n################ ################ ################ ################ ################ ################")#
+cat("\n\n\n\t\t\t\t***  fitting singel process models of trait evolution using geiger::fitContinuous and compare results",""," *** \n",sep="") #
+cat("################ ################ ################ ################ ################ ################")#
+cat( "\n\n")#
+cat("niter = ");cat(niter) #
+cat( "\n\n")
+################ ################ ################ #
+#
+x= d[,2]; names(x)= d[,1]
+###############
+# prepare output	#
+summaries=c("BM", "Ornstein-Uhlenbeck", "early burst")#
+aic=matrix( NA ,1, length( summaries))#
+lnl=matrix(NA,  1,length( summaries))
+cat("\n\n\n\t\t\t\t*** EB model  *** \n\n")#
+EB= 	fitContinuous(tree, x, model="EB", SE= 0, ncores= ncores, control=list(niter= niter))#
+print(EB)
+tree = read.nexus("../input/b3_pruned_to_PLS_body_data_nexus.tre")
+if( !is.ultrametric(tree))#
+	tree= force.ultrametric(tree, method="nnls")#
+#
+# get data:#
+d= read.table("../input/PLS_body.txt", h=F)
+################  recheck data concruence  ################ #
+#
+if ( any(! d[,1] %in% tree$tip.label)) { stop( "not all taxa from data occure in the tree" )}#
+if ( any(! tree$tip.label %in% d[,1] )) { stop( "not all taxa from the tree occure in data" )}#
+#
+################ ################ ################ #
+cat("\n\n################ ################ ################ ################ ################ ################\n")#
+#
+cat("\n################ ################ ################ ################ ################ ################")#
+cat("\n\n\n\t\t\t\t***  fitting singel process models of trait evolution using geiger::fitContinuous and compare results",""," *** \n",sep="") #
+cat("################ ################ ################ ################ ################ ################")#
+cat( "\n\n")#
+cat("niter = ");cat(niter) #
+cat( "\n\n")#
+################ ################ ################ #
+#
+x= d[,2]; names(x)= d[,1]
+cat("\n\n\n\t\t\t\t***  BM model  *** \n\n",sep="")#
+BM= 	fitContinuous(tree, x, model="BM", SE= 0, ncores= ncores, control=list(niter=niter))#
+print(BM)
+cat("\n\n\n\t\t\t\t*** EB model  *** \n\n")#
+EB= 	fitContinuous(tree, x, model="EB", SE= 0, ncores= ncores, control=list(niter= niter))#
+print(EB)
+d= read.table("../input/PLS_oral.txt", h=F)
+################  recheck data concruence  ################ #
+#
+if ( any(! d[,1] %in% tree$tip.label)) { stop( "not all taxa from data occure in the tree" )}#
+if ( any(! tree$tip.label %in% d[,1] )) { stop( "not all taxa from the tree occure in data" )}#
+#
+################ ################ ################ #
+cat("\n\n################ ################ ################ ################ ################ ################\n")#
+#
+cat("\n################ ################ ################ ################ ################ ################")#
+cat("\n\n\n\t\t\t\t***  fitting singel process models of trait evolution using geiger::fitContinuous and compare results",""," *** \n",sep="") #
+cat("################ ################ ################ ################ ################ ################")#
+cat( "\n\n")#
+cat("niter = ");cat(niter) #
+cat( "\n\n")#
+################ ################ ################ #
+#
+x= d[,2]; names(x)= d[,1]
+# prepare output	#
+summaries=c("BM", "Ornstein-Uhlenbeck", "early burst")#
+aic=matrix( NA ,1, length( summaries))#
+lnl=matrix(NA,  1,length( summaries))
+cat("\n\n\n\t\t\t\t*** EB model  *** \n\n")#
+EB= 	fitContinuous(tree, x, model="EB", SE= 0, ncores= ncores, control=list(niter= niter))#
+print(EB)
+tree = read.nexus("../input/b2_pruned_to_PLS_body_data_nexus.tre")
+d= read.table("../input/PLS_oral.txt", h=F)
+if ( any(! d[,1] %in% tree$tip.label)) { stop( "not all taxa from data occure in the tree" )}#
+if ( any(! tree$tip.label %in% d[,1] )) { stop( "not all taxa from the tree occure in data" )}#
+#
+################ ################ ################ #
+cat("\n\n################ ################ ################ ################ ################ ################\n")#
+#
+cat("\n################ ################ ################ ################ ################ ################")#
+cat("\n\n\n\t\t\t\t***  fitting singel process models of trait evolution using geiger::fitContinuous and compare results",""," *** \n",sep="") #
+cat("################ ################ ################ ################ ################ ################")#
+cat( "\n\n")#
+cat("niter = ");cat(niter) #
+cat( "\n\n")#
+################ ################ ################ #
+#
+x= d[,2]; names(x)= d[,1]
+cat("\n\n\n\t\t\t\t*** EB model  *** \n\n")#
+EB= 	fitContinuous(tree, x, model="EB", SE= 0, ncores= ncores, control=list(niter= niter))#
+print(EB)
+AXIS= "body"
+TREE= "b1"
+getwd()
