@@ -23,4 +23,4 @@ The directory [`trait_evolution/03_TraitEvolution/scripts`](trait_evolution/03_T
 
 The directory includes the scripts to perform RepeatMasker and RepeatModeler, and to combine results for every genomes.
 * [`1_RepeatMasker_RepeatModeler_VR.sh`](transposable_elements/1_RepeatMasker_RepeatModeler_VR.sh) script
-* [`2_Combine_RMasker_RModeler_outputs_VR.py`](transposable_elements/2_Combine_RMasker_RModeler_outputs_VR.py) script that can be run using [`2_Combine_RMasker_RModeler_outputs_VR.sh script`](transposable_elements/2_Combine_RMasker_RModeler_outputs_VR.sh)
+* [`2_Combine_RMasker_RModeler_outputs_VR.py`](transposable_elements/2_Combine_RMasker_RModeler_outputs_VR.py) script that can be run using [`2_Combine_RMasker_RModeler_outputs_VR.sh`](transposable_elements/2_Combine_RMasker_RModeler_outputs_VR.sh) script
