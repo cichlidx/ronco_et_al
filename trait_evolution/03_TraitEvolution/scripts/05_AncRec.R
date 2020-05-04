@@ -1,3 +1,8 @@
+## Fabrizia Ronco
+## April 2020
+
+
+
 #######
 #####
 #       character state reconstruction:  Estimating the ancestral states based on varRates model
@@ -5,7 +10,7 @@
 
 
 ## load libraries
-require(phytools)
+require(phytools) ## version 0.6-60
 
 ##  get variables from command line
 args = commandArgs(trailingOnly=TRUE)

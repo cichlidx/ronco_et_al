@@ -1,11 +1,17 @@
+## Fabrizia Ronco
+## April 2020
 
-###get variables from comand line
 
+############################################################################
+#### check Bayes Traits runs for convergence 
+
+
+###  load packages
+require(coda) # version 0.19-3
+
+### allow variables from command line
 args = commandArgs(trailingOnly=TRUE)
 
-
-# load packages
-require(coda)
 
 ###  set initial burnin. | the parfile of the variable rates model alread defines a burnin, only after which the chain is sampled.
 ###. this script tests if the chain has converged. if the chain has converged it created a file "additional_burinin" to define for downstream analyses how many of the posterior samples to be used
@@ -25,8 +31,6 @@ AXES=args[5]
 
 
 ###  read the chain from the Bayes Traits run
-
-
 d = scan(paste(dirname, filename, ".Log.txt", sep=""), what="numeric", sep="\t")
 startH = grep("Iteration", d)[2]
 endH = grep("Node", d)[2]+1
@@ -41,7 +45,6 @@ for ( i in c(2,4,5,6,7)) post[,i] = as.numeric(as.character(post[,i]))
 
 
 ########  make plot function to visualze the chain convergence
-
 plot_chain = function(input, burnin=0) {
   if(burnin!= 0) {input= input[-c(1:burnin),]}
   input$NoParam= input[,6] + input[,7]
@@ -59,10 +62,6 @@ plot_chain = function(input, burnin=0) {
   plot(input $NoParam ~ c(1:length(input$Iteration)), pch=16, cex=0.1, col="deepskyblue4", ylab="number of shifts", xlab="sample");lines( c(1:length(input$Iteration)), input $NoParam, col="deepskyblue4")
   abline( lm(input $NoParam ~ c(1:length(input $Iteration)) )); abline( mean(input $NoParam), 0, col="red", lty="dashed")
 }
-
-
-
-
 
 
 

@@ -1,12 +1,18 @@
+## Fabrizia Ronco
+## April 2020
+
+
+
 ############################################
 ##################  ----------------------------   compare to NULL models
 #############################################
-
 ###### -------- BM Null model, simulate data given the original tree:
 #  this asumes continous trait evolution proportional to time and number of lineages
 
-require(phytools)
+###  load packages
+require(phytools)  ## version 0.6-60
 
+### allow variables from command line
 args = commandArgs(trailingOnly=TRUE)
 dirname= args[1]
 TRAIT= args[2]

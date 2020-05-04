@@ -1,13 +1,18 @@
-###############    preparing input files for running BayesTraits
+## Fabrizia Ronco
+## April 2020
+
+############################################################################
+#### Prepare input files for downstream phylogenetic comparative analyses
+
 
 
 ### allow variables from command line
 args = commandArgs(trailingOnly = TRUE)
 
 
-##  
-require(phytools)
-require(logisticPCA)
+###  load packages 
+require(phytools) 		## version 0.6-60
+require(logisticPCA)	## version 0.2
 
 
 ###  get data 

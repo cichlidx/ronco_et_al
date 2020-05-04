@@ -1,10 +1,16 @@
+## Fabrizia Ronco
+## April 2020
+
+
+############################################################################
+#### Prepare input files for downstream phylogenetic comparative analyses
 
 
 ### allow variables from command line
 args = commandArgs(trailingOnly = TRUE)
 
-###  require
-require(ape)
+###  load packages
+require(ape)  # version 5.2
 
 ######   get data
 d= read.csv(args[1])

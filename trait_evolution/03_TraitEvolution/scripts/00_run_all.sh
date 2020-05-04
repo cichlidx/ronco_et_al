@@ -154,7 +154,13 @@ for AXES in $allAXES; do
 	${TRAIT} \
 	${AXES} 
 
-
-
-
 done
+
+
+####################################################################################
+	###  Plot all results - max rates values need to be adjusted depending on the results
+	Rscript 09a_panelplot_all_four_analysis_PLS_b1
+
+
+
+

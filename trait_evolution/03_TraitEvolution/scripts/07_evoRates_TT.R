@@ -1,11 +1,17 @@
 
+## Fabrizia Ronco
+## April 2020
+
+
+
+
 ############################################
 ##################  ------ calculate mean and sd of evolutionary rates (estimated by the araible rates model) through time 
 #############################################
 
 
 ## load libraries
-require(phytools)
+require(phytools) ## version 0.6-60
 
 ##  get variables from comand line
 args = commandArgs(trailingOnly=TRUE)

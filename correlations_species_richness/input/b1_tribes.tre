@@ -1,0 +1,37 @@
+#NEXUS
+[R-package APE, Mon Jan 20 13:23:16 2020]
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 12;
+	TAXLABELS
+		Boulengerochromini
+		Trematocarini
+		Bathybatini
+		Lamprologini
+		Cyphotilapiini
+		Limnochromini
+		Ectodini
+		Benthochromini
+		Perissodini
+		Cyprichromini
+		Eretmodini
+		Tropheini
+	;
+END;
+BEGIN TREES;
+	TRANSLATE
+		1	Boulengerochromini,
+		2	Trematocarini,
+		3	Bathybatini,
+		4	Lamprologini,
+		5	Cyphotilapiini,
+		6	Limnochromini,
+		7	Ectodini,
+		8	Benthochromini,
+		9	Perissodini,
+		10	Cyprichromini,
+		11	Eretmodini,
+		12	Tropheini
+	;
+	TREE * UNTITLED = [&R] ((1:9.129948,(2:7.930123,3:7.930123):1.199825):0.579735,(4:8.687662,((5:7.769936,(6:7.2735,7:7.2735):0.496436):0.298685,(((8:5.778788,9:5.778787):0.462342,10:6.241129):1.564611,(11:7.095211,12:7.095208):0.710531):0.26288):0.619042):1.02202);
+END;

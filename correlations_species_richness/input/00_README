@@ -1,0 +1,21 @@
+##############################
+Description of Input files
+##############################
+
+
+duplications.vcf.gz		### Gene Duplication estimates calculated using : https://github.com/brentp/smoove, docker image cloned 20/12/2018)
+F4_withinTribes.txt		### F4-ratio statistics calculated with Dsuite (see https://github.com/cichlidx/ronco_et_al/tree/master/f4-ratio_analyses) 
+genomewide_dNdS.txt		### dN/dS values (see https://github.com/cichlidx/ronco_et_al/tree/master/selection_coding_sequence)
+TEs_percent_per_species.tsv		### Repeat content in the genomes (%), see https://github.com/cichlidx/ronco_et_al/tree/master/transposable_elements
+numHetSites.txt			### Number of Heterozygote sites per genome, calculated using  (bcftools -stats) 
+number_masked_sites.txt		### Number of masked sites per genomes 
+
+b1_tribes.tre			### time-calibrated species tree based on the maximum-likelihood topology estimated with RAxML pruned to the tribe level:
+species_number.txt		### estimated number of species per tribe, taken from Ronco et al. 2019 (doi:doi.org/10.1016/j.jglr.2019.05.009)
+
+colors_tribes.txt 		### Colour code table to assign tribe colours for plotting
+
+SpeciesInfo			### translation table for the specimen voucher IDs to species and tribe 
+specimen_voucher_key.csv 	### translation table for the specimen voucher IDs to species and tribe 
+
+

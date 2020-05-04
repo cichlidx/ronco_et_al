@@ -1,31 +1,25 @@
+## Fabrizia Ronco
+## April 2020
 
 
+############################################################################
+#### Fitting single process models of trait evolution
+
+
+## load packages
+require(geiger)		# version 2.0.6.1
+require(phytools)	# version 0.6-60
+require(parallel)	# version 3.6.1
+
+### allow variables from command line
 args = commandArgs(trailingOnly = TRUE)
 
 
-## opening output file
-
-
-###  testing model of trait evolution:
-niter= 10000
-ncores= 4
-options(mc.cores=4)
-
-
-##  
-
-
-
-## load required packages
-require(geiger)
-require(phytools)
-require(parallel)
-
+################
 #  get data 
-################ ################ ################ 
 
 # get tree:
-#tree = read.nexus("../input/b1_pruned_to_PLS_body_data_nexus.tre")tree= read.nexus(args[1])
+tree= read.nexus(args[1])
 
 if( !is.ultrametric(tree))
 	tree= force.ultrametric(tree, method="nnls")
@@ -33,12 +27,17 @@ if( !is.ultrametric(tree))
 # get data:
 d= read.table(args[2], h=F)
 
-################  recheck data concruence  ################ 
+################  
+## check data concruence 
 
 if ( any(! d[,1] %in% tree$tip.label)) { stop( "not all taxa from data occure in the tree" )}
 if ( any(! tree$tip.label %in% d[,1] )) { stop( "not all taxa from the tree occure in data" )}
 
-################ ################ ################ 
+################ 
+###  set parameters:
+niter= 10000
+ncores= 4
+options(mc.cores=4)
 
 
 cat("\n\n################ ################ ################ ################ ################ ################\n")

@@ -1,3 +1,6 @@
+## Fabrizia Ronco
+## April 2020
+
 
 
 
@@ -7,8 +10,6 @@
 
 
 ##  get variables from comand line
-
-
 args = commandArgs(trailingOnly=TRUE)
 
 dirname= args[1]

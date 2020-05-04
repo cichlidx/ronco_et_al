@@ -1,18 +1,19 @@
+## Fabrizia Ronco
+## April 2020
+
 
 
 ##  get variables from comand line
-
 TREE="b1"
 TRAIT="PLS"
 n= 0.15    ####  recunstructed in n timeinterval
-
 max.value=37 ##BEAST;
 
 
 # load packages
-require(phytools)
-require(scales)
-require(gplots)
+require(phytools)  	## version 0.6-60
+require(scales)  	## version 1.0.0
+require(gplots)	 	## version 3.0.3
 
 
 

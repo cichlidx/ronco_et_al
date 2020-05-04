@@ -1,0 +1,17 @@
+tribe	est_num_sp
+Bathybatini	9
+Benthochromini	3
+Boulengerochromini	1
+Coptodini	1
+Cyphotilapiini	3
+Cyprichromini	11
+Ectodini	38
+Eretmodini	5
+Haplochromini	4
+Lamprologini	100
+Limnochromini	10
+Oreochromini	1
+Perissodini	9
+Trematocarini	9
+Tropheini	35
+Tylochromini	1

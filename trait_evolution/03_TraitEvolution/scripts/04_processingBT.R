@@ -1,14 +1,14 @@
+## Fabrizia Ronco
+## April 2020
 
 # load packages
-
-require(phytools)
+require(phytools)  ## version 0.6-60
 
 
 ##  get variables from comand line
 args = commandArgs(trailingOnly=TRUE)
 dirname=args[1]
 filename=args[2]
-
 TRAIT= args[4]
 AXES= args[5]
 
