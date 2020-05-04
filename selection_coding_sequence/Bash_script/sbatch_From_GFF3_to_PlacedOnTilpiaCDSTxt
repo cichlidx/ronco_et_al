@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#SBATCH --job-name=From_GFF3_to_PlacedonTILAPIA_CDS_txt
+#SBATCH --mail-user=athimed.eltaher@unibas.ch
+#SBATCH --mail-type=FAIL,REQUEUE,ARRAY_TASKS
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --qos=30min
+#SBATCH --time=00:05:00
+#SBATCH --array=1-528
+#SBATCH --output=/scicore/home/salzburg/eltaher/cichlidX/scicore_report/From_GFF3_to_PlacedonTILAPIA_exon_txt_out.o
+#SBATCH --error=/scicore/home/salzburg/eltaher/cichlidX/scicore_report/From_GFF3_to_PlacedonTILAPIA_exon_txt_err.o
+#SBATCH --workdir=/scicore/home/salzburg/eltaher/cichlidX/result/GMAP/augustus_coding_sequence
+
+module load Python/2.7.11-goolf-1.7.20
+module load R/3.4.2-goolf-1.7.20
+
+
+export SPECIMEN=`cat /scicore/home/salzburg/eltaher/cichlidX/data/dNdS_genomes/speciesList.txt | head -n $SLURM_ARRAY_TASK_ID | tail -n 1`
+
+python /scicore/home/salzburg/eltaher/cichlidX/script/Augustus/Gff3_parser_CichlidX_genomes_CDS.py -i /scicore/home/salzburg/eltaher/cichlidX/result/GMAP/augustus_coding_sequence/${SPECIMEN}/GMAP_GenePrediction_Augustus_${SPECIMEN}_codingseq_qcov50_iden80.gff3 -o /scicore/home/salzburg/eltaher/cichlidX/result/GMAP/augustus_coding_sequence/${SPECIMEN}/GMAP_GenePrediction_Augustus_${SPECIMEN}_codingseqCDS_qcov50_iden80.txt
+Rscript /scicore/home/salzburg/eltaher/cichlidX/script/Augustus/CondingSequences_predictionCDS.R ${SPECIMEN}
+

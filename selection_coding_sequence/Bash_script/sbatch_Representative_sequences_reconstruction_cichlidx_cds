@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#SBATCH --job-name=Representative_sequences_reconstruction_cichlidx_cds
+#SBATCH --mail-user=athimed.eltaher@unibas.ch
+#SBATCH --mail-type=FAIL,REQUEUE,ARRAY_TASKS
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=4G
+#SBATCH --qos=6hours
+#SBATCH --time=2:00:00
+#SBATCH --array=1-490
+#SBATCH --output=/scicore/home/salzburg/eltaher/cichlidX/scicore_report/Representative_sequences_reconstruction_cichlidx_cds_out.o
+#SBATCH --error=/scicore/home/salzburg/eltaher/cichlidX/scicore_report/Representative_sequences_reconstruction_cichlidx_cds_err.o
+#SBATCH --workdir=/scicore/home/salzburg/eltaher
+
+module load R/3.5.0-goolf-1.7.20
+
+export SPECIES=`cat /scicore/home/salzburg/eltaher/cichlidX/data/dNdS_genomes/speciesList.txt | head -n $SLURM_ARRAY_TASK_ID | tail -n 1`
+Rscript /scicore/home/salzburg/eltaher/cichlidX/script/Augustus/Representative_sequences_reconstruction_cichlidx_cds.R ${SPECIES} /scicore/home/salzburg/eltaher/cichlidX/result/Augustus_codingseq_PlacedOnTilpiaCDS/TilapiaCDSKept_positiveSelection_0.8per_490Genomes_260335CDS_2018-10-05.txt /scicore/home/salzburg/eltaher/cichlidX/result/Augustus_codingseq_PlacedOnTilpiaCDS/TilapiaRepresentativeProteins_positiveSelection_0.8per_490Genomes_15291UniqueProteins_2018-10-05.txt 0.8

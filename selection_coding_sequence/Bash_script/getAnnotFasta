@@ -1,0 +1,4 @@
+
+
+cd /scicore/home/salzburg/eltaher/cichlidX/result/Augustus
+for i in `ls`; do /scicore/soft/apps/Augustus/3.2.3-goolf-1.7.20/scripts/getAnnoFasta.pl  ${i}/GenePrediction_Augustus_${i}.gff3; done

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+#SBATCH --job-name=Pairwise_dNdS_codeml
+#SBATCH --mail-user=athimed.eltaher@unibas.ch
+#SBATCH --mail-type=FAIL,REQUEUE,ARRAY_TASKS
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=2G
+#SBATCH --qos=6hours
+#SBATCH --time=06:00:00
+#SBATCH --array=111-15291
+#SBATCH --output=/scicore/home/salzburg/eltaher/cichlidX/scicore_report/Pairwise_dNdS_codeml_%x.%A_%J_%a_out.o
+#SBATCH --error=/scicore/home/salzburg/eltaher/cichlidX/scicore_report/Pairwise_dNdS_codeml_%x.%A_%J_%a_err.o
+#SBATCH --workdir=/scicore/home/salzburg/eltaher/cichlidX/result/PAML
+
+module load R/3.5.0-goolf-1.7.20
+module load SAMtools/1.7-goolf-1.7.20
+module load PAML/4.9e-goolf-1.7.20
+module load R/3.5.0-goolf-1.7.20
+module load SAMtools/1.7-goolf-1.7.20
+module load PAML/4.9e-goolf-1.7.20
+
+# For each sequence, pairwise reference-specimenID dNdS:
+export SEQUENCE=`cut -f 3 /scicore/home/salzburg/eltaher/cichlidX/result/Augustus_codingseq_PlacedOnTilpiaCDS/TilapiaRepresentativeProteins_positiveSelection_0.8per_490Genomes_15291UniqueProteins_2018-10-05.txt | tail -n +2 | head -n $SLURM_ARRAY_TASK_ID | tail -n 1`
+
+mkdir /scicore/home/salzburg/eltaher/cichlidX/result/PAML/${SEQUENCE}
+mkdir /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/codeml_summaryFile/Omega1/${SEQUENCE}
+mkdir /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/codeml_summaryFile/OmegaEstimate/${SEQUENCE}
+mkdir /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/lnL/${SEQUENCE}
+
+for specimen in `cat /scicore/home/salzburg/eltaher/cichlidX/data/dNdS_genomes/speciesList.txt`
+do
+echo $specimen
+mkdir /scicore/home/salzburg/eltaher/cichlidX/result/PAML/${SEQUENCE}/${specimen}
+Rscript /scicore/home/salzburg/eltaher/cichlidX/script/YN00/PairwiseSelection_for_YN00.R ${SEQUENCE} ${specimen}
+cd /scicore/home/salzburg/eltaher/cichlidX/result/PAML/${SEQUENCE}/${specimen}
+
+
+
+sed "s/input.fasta/$SEQUENCE.$specimen.Pairwise.macse.nucl.fasta/" /scicore/home/salzburg/eltaher/cichlidX/script/YN00/TemplateClock.ctl > ${SEQUENCE}_${specimen}.ctl
+sed "s/output.yn00/$SEQUENCE.$specimen.yn00/" ${SEQUENCE}_${specimen}.ctl > ${SEQUENCE}_${specimen}_final.ctl
+sed "s/input.fasta/$SEQUENCE.$specimen.Pairwise.macse.nucl.fasta/" /scicore/home/salzburg/eltaher/cichlidX/script/YN00/TemplateClock.Omega1.ctl > ${SEQUENCE}_${specimen}.Omega1.ctl
+sed "s/output.yn00/$SEQUENCE.$specimen.Omega1.yn00/" ${SEQUENCE}_${specimen}.Omega1.ctl > ${SEQUENCE}_${specimen}_final.Omega1.ctl
+
+
+codeml ${SEQUENCE}_${specimen}_final.ctl
+codeml ${SEQUENCE}_${specimen}_final.Omega1.ctl
+
+var=`grep lnL ${SEQUENCE}.${specimen}.Omega1.yn00 | perl -pe 'chomp; s/\+0.000000//;s/ //g; s/:-/\t-/; $_=$_."\t"; s/lnL\(ntime:82//; s/\)//;'; grep lnL ${SEQUENCE}.${specimen}.yn00 | perl -pe 'chomp; s/\+0.000000//;s/ //g; s/:-/\t-/; $_=$_."\t"; s/lnL\(ntime:82//; s/\)//;'; grep omega ${SEQUENCE}.${specimen}.yn00 | perl -pe 's/omega \(dN\/dS\) =//; s/ //g;'`
+mystring="${specimen} $var"
+echo $mystring | sed 's/lnL=//g' >  /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/lnL/${SEQUENCE}/${SEQUENCE}.${specimen}.individual.lnL.txt
+
+# the standard output file copy into dNdS directory:
+find ${SEQUENCE}.${specimen}.Omega1.yn00 -not -empty -exec mv -t /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/codeml_summaryFile/Omega1/${SEQUENCE} {} +
+find ${SEQUENCE}.${specimen}.yn00 -not -empty -exec mv -t /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/codeml_summaryFile/OmegaEstimate/${SEQUENCE} {} +
+
+cd ../
+#
+rm -r /scicore/home/salzburg/eltaher/cichlidX/result/PAML/${SEQUENCE}/${specimen}
+done
+cd ../
+
+cat /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/lnL/${SEQUENCE}/${SEQUENCE}.*.individual.lnL.txt > /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/lnL/${SEQUENCE}.lnL.txt
+
+python /scicore/home/salzburg/eltaher/cichlidX/script/YN00/parse_lnL.py -s ${SEQUENCE}
+python /scicore/home/salzburg/eltaher/cichlidX/script/YN00/parse_yn00_codeml2.py -s ${SEQUENCE}
+
+rm /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/lnL/${SEQUENCE}.lnL.txt
+rm -r /scicore/home/salzburg/eltaher/cichlidX/result/dNdS/lnL/${SEQUENCE}
+
+rm -r /scicore/home/salzburg/eltaher/cichlidX/result/PAML/${SEQUENCE}
