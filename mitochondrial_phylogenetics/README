@@ -1,0 +1,15 @@
+# m_matschiner Wed May 6 00:10:33 CEST 2020
+
+Scripts and data files in this directory allow reproducing mitochondrial assembly and phylogenetic inference from these assemblies. Scripts are written to be run on an SGE queuing system. File src/run_all.sh specifies in which sequence scripts should be run; however, 'bash run_all.sh' may not run all scripts from beginning to end, because the execution of one script may need to wait for jobs triggered by an upstream script to finish first.
+
+Before running scripts in src:
+
+- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep module | sort | uniq'. Adjust module names as needed.
+
+- In file src/convert_bams_to_fastqs.sh, PATH_TO_PICARD must be replaced with the path to picard.jar.
+
+- In file src/make_mitochondrial_assembly.sh, PATH_TO_MITOBIM must be replaced with te path to MITObim_1.8.pl.
+
+- Files with mapped reads in bam format must be placed in data/bam.
+
+- The edited version of the orenil2 reference genome (GCF_001858045.1_ASM185804v2_genomic_edit.fna; see directory 'variant_calling') must be placed in data/reference and renamed to orenil2.fasta.

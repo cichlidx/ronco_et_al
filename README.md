@@ -1,9 +1,16 @@
 # CichlidX script repository
 
-**Repository for scripts used in Ronco et al. (in revision).**
+**Repository for scripts used in Ronco et al. (resubmitted).**
 
 Directories correspond to different types of analyses as described below.
 
+## variant_calling
+
+XXX TODO
+
+## mitochondrial_phylogenetics
+
+Scripts and data files in this directory allow reproducing mitochondrial assembly and phylogenetic inference from these assemblies. Scripts are written to be run on an SGE queuing system. File [`run_all.sh`](mitochondrial_phylogenetics/src/run_all.sh) in directory [`mitochondrial_phylogenetics/src`](mitochondrial_phylogenetics/src) specifies in which sequence scripts should be run.
 
 ## f4-ratio_analyses
 
