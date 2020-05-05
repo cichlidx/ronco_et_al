@@ -2,11 +2,11 @@
 # Pipeline for Selection of shared sequences. #
 
 
-# 1. Augustus on DNA denovo assemblies: ####
-## AUGUSTUS, a software for gene prediction in eukaryotic genomic sequences that is based on a generalized hidden Markov model, a probabilistic model of a sequence and its gene structure.
-## Parameters: --species=zebrafish
-## ARRAY JOB on all assemblies:
-## 1.1 script:
+# 1. Augustus on DNA denovo assemblies: 
+### AUGUSTUS, a software for gene prediction in eukaryotic genomic sequences that is based on a generalized hidden Markov model, a probabilistic model of a sequence and its gene structure.
+### Parameters: --species=zebrafish
+### ARRAY JOB on all assemblies:
+### 1.1 script:
 /scicore/home/salzburg/eltaher/cichlidX/script/Augustus/sbatch_abInitio_DNAassembly
 # 1.2 output:     # Format = gff3
 /scicore/home/salzburg/eltaher/cichlidX/result/Augustus/${SPECIMEN}/GenePrediction_Augustus_${SPECIMEN}.gff3
