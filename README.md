@@ -32,10 +32,10 @@ includes data on per genome repeat content (see [`transposable_elements`](transp
 
 ## Selection_coding_sequence 
 
-This directory includes all scripts and data to measure substitution rates in coding sequences. Details of the pipeline are mentioned in [`selection_coding_sequence/Readme.md`]. Scripts and data are grouped into six sub-directories:
-* [`selection_coding_sequence/Bash_script`]
-* [`selection_coding_sequence/Input_file`]
-* [`selection_coding_sequence/Perl_script`]
-* [`selection_coding_sequence/Python_script`]
-* [`selection_coding_sequence/R_script`]
-* [`selection_coding_sequence/Template_codeml`]
+This directory includes all scripts and data to measure substitution rates in coding sequences. Details of the pipeline are mentioned in [`selection_coding_sequence/Readme.md`](selection_coding_sequence/Readme.md). Scripts and data are grouped into six sub-directories:
+* [`selection_coding_sequence/Bash_script`](selection_coding_sequence/Bash_script)
+* [`selection_coding_sequence/Input_file`](selection_coding_sequence/Input_file)
+* [`selection_coding_sequence/Perl_script`](selection_coding_sequence/Perl_script)
+* [`selection_coding_sequence/Python_script`](selection_coding_sequence/Python_script)
+* [`selection_coding_sequence/R_script`](selection_coding_sequence/R_script)
+* [`selection_coding_sequence/Template_codeml`](selection_coding_sequence/Template_codeml)
