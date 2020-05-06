@@ -1,6 +1,7 @@
 # m_matschiner Wed May 6 00:10:33 CEST 2020
 
-Scripts and data files in this directory allow reproducing mitochondrial assembly and phylogenetic inference from these assemblies. Scripts are written to be run on an SGE queuing system. File src/run_all.sh specifies in which sequence scripts should be run; however, 'bash run_all.sh' may not run all scripts from beginning to end, because the execution of one script may need to wait for jobs triggered by an upstream script to finish first.
+Scripts and data files in this directory perform mitochondrial assembly and phylogenetic inference from these assemblies. Scripts are written to be run on an SGE queuing system. File src/run_all.sh specifies in which sequence scripts should be run (but run_all.sh itself should not be executed as it would trigger scripts before upstream scripts have completed).
+
 
 Before running scripts in src:
 

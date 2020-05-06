@@ -1,0 +1,63 @@
+# Etroplinae
+JWD4	Etroplus canarensis
+
+# Ptychochrominae
+FPO1	Ptychochromis oligocanthus
+JWD5	Paratilapia polleni "Andapa"
+
+# Cichlinae
+## Cichlasomatini
+JWD7	Andinoacara biseriatus
+JWD8	Bujurquina vittata
+## Heroini
+JWE1	Amphilophus zaliosus
+JWE2	Australoheros scitulus
+## Geophagini
+JWD9	Apistogramma diplotaenia
+
+# Pseudocrenilabrinae
+## Heterochromini
+JWF1	Heterochromis multidens
+## Tylochromini
+JAG2	Tylochromis polylepis
+JAH5	Tylochromis polylepis
+## Chromidotilapiini
+JWE4	Benitochromis conjunctus
+JWI4	Pelvicachromis taeniatus
+JWI5	Pelvicachromis taeniatus
+## Hemichromini
+JWE9	Hemichromis elongatus
+## Etiini
+JWD3	Etia nguti
+## Oreochromini
+JAB6	Oreochromis tanganicae
+JAC7	Oreochromis tanganicae
+KYH4	Oreochromis malagarasi
+Z05	Sarotherodon lohbergeri
+## Tilapiini
+JWF7	Tilapia sparrmanii
+## Steatocranini
+JWE8	Steatocranus sp. ultraslender
+## Gobiocichlini
+JWE7	Gobiocichla ethelwynae
+JWF9	"Tilapia" brevimanus
+## Pelmatolapiini
+JWF2	Pelmatolapia mariae
+## Heterotilapiini
+JWE3	Heterotilapia buttikofferi
+## Coptodiini
+JWE5	Coptodon bakossiorum
+JWE6	Coptodon rendalli
+## Trematocarini
+ISA3	Trematocara marginatum
+IUE5	Trematocara nigrifrons
+IXA3	Trematocara unimaculatum
+IXA6	Trematocara unimaculatum
+## Ectodini
+INF2	Asprotilapia leptura
+JDD7	Grammatotria lemairii
+## Lamprologini
+JWA5	Neolamprologus variostigma
+JWA6	Neolamprologus variostigma
+## Haplochromini
+LJD2	Astatotilapia flaviijosephi
