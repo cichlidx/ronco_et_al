@@ -8,7 +8,19 @@ Directories correspond to different types of analyses as described below.
 
 Scripts and data files in this directory perform local assembly of candidate phylogenetic markers, using the programs aTRAM and Kollector. Scripts are written to run on an SGE queuing system; however, aTRAM databases were mostly prepared on a laptop computer with a solid-state drive because the hard disk drives of the SGE were found to write these databases orders of magnitudes slower. File [`run_all.sh`](local_assembly/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](local_assembly/README) file in directory [`mitochondrial_phylogenetics`](local_assembly).
 
-## age_determination
+## age_determination/nuclear_queries_selection
+
+Scripts and data files in this directory enable the selection of query sequences for downstream ortholog identification. Scripts are written to run on an SGE queuing system. File [`run_all.sh`](age_determination/nuclear_queries_selection/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed).
+
+## age_determination/ortholog_identification
+
+XXX TODO (cichlid_phylogenetics)
+
+## age_determination/phylogenetic_inference
+
+XXX TODO (cichlid_phylogenetics)
+
+## age_determination/introgression_detection
 
 XXX TODO (cichlid_phylogenetics)
 

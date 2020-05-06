@@ -5,6 +5,8 @@ Scripts and data files in this directory perform local assembly of candidate phy
 
 Before running scripts in src:
 
+- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep "module load" | sort | uniq'. Adjust module names as needed.
+
 - Fastq files for specimens listed in data/tables/specimen_ids.txt must be placed in data/fastq.
 
 

@@ -1,0 +1,7 @@
+id	links
+orylat	ftp://ftp.ensembl.org/pub/release-94/fasta/oryzias_latipes_hsok/dna/Oryzias_latipes_hsok.ASM223469v1.dna.toplevel.fa.gz
+ampcit.cdna	ftp://ftp.ensembl.org/pub/release-94/fasta/amphilophus_citrinellus/cdna/Amphilophus_citrinellus.Midas_v5.cdna.all.fa.gz
+orenil.cdna	ftp://ftp.ensembl.org/pub/release-94/fasta/oreochromis_niloticus/cdna/Oreochromis_niloticus.Orenil1.0.cdna.all.fa.gz
+metzeb.cdna	ftp://ftp.ensembl.org/pub/release-94/fasta/maylandia_zebra/cdna/Maylandia_zebra.M_zebra_UMD2a.cdna.all.fa.gz
+neobri.cdna	ftp://ftp.ensembl.org/pub/release-94/fasta/neolamprologus_brichardi/cdna/Neolamprologus_brichardi.NeoBri1.0.cdna.all.fa.gz
+astbur.cdna	ftp://ftp.ensembl.org/pub/release-94/fasta/haplochromis_burtoni/cdna/Haplochromis_burtoni.AstBur1.0.cdna.all.fa.gz

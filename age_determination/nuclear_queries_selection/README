@@ -1,0 +1,10 @@
+# m_matschiner Wed May 6 11:26:55 CEST 2020
+
+Scripts and data files in this directory enable the selection of query sequences for downstream ortholog identification. Scripts are written to run on an SGE queuing system. File src/run_all.sh specifies in which sequence scripts should be run (but run_all.sh itself should not be executed as it would trigger scripts before upstream scripts have completed).
+
+
+Before running scripts in src:
+
+- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep "module load" | sort | uniq'. Adjust module names as needed.
+
+- File mart_export.txt must be generated from https://www.ensembl.org/biomart as shown with screenshots in data/tables and placed in data/tables.

@@ -5,7 +5,7 @@ Scripts and data files in this directory perform mitochondrial assembly and phyl
 
 Before running scripts in src:
 
-- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep module | sort | uniq'. Adjust module names as needed.
+- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep "module load" | sort | uniq'. Adjust module names as needed.
 
 - In file src/convert_bams_to_fastqs.sh, PATH_TO_PICARD must be replaced with the path to picard.jar.
 

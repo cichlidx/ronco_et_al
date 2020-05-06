@@ -1,0 +1,2 @@
+id	links
+orenil2	ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/MK/QE/MKQE02/MKQE02.1.fsa_nt.gz ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/MK/QE/MKQE02/MKQE02.2.fsa_nt.gz
