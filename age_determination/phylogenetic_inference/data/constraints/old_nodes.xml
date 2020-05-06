@@ -1,0 +1,148 @@
+				<distribution id="totalgroup.prior" spec="beast.math.distributions.MRCAPrior" tree="@tree.t:Species" monophyletic="true">
+					<taxonset id="totalgroup" spec="TaxonSet">
+						<taxon idref="orylat_spc"/>
+						<taxon idref="ampcit_spc"/>
+						<taxon idref="ampzal_spc"/>
+						<taxon idref="andbis_spc"/>
+						<taxon idref="andcoe_spc"/>
+						<taxon idref="apidip_spc"/>
+						<taxon idref="asplep_spc"/>
+						<taxon idref="astfla_spc"/>
+						<taxon idref="aussci_spc"/>
+						<taxon idref="bencon_spc"/>
+						<taxon idref="bujvit_spc"/>
+						<taxon idref="copbak_spc"/>
+						<taxon idref="copren_spc"/>
+						<taxon idref="cypvar_spc"/>
+						<taxon idref="etingu_spc"/>
+						<taxon idref="etrcan_spc"/>
+						<taxon idref="gobeth_spc"/>
+						<taxon idref="gralem_spc"/>
+						<taxon idref="hemelo_spc"/>
+						<taxon idref="hetbut_spc"/>
+						<taxon idref="hetmul_spc"/>
+						<taxon idref="krymar_spc"/>
+						<taxon idref="metzeb_spc"/>
+						<taxon idref="neobri_spc"/>
+						<taxon idref="neovar_spc"/>
+						<taxon idref="notfur_spc"/>
+						<taxon idref="oremal_spc"/>
+						<taxon idref="orenil_spc"/>
+						<taxon idref="oretan_spc"/>
+						<taxon idref="parpar_spc"/>
+						<taxon idref="parpol_spc"/>
+						<taxon idref="peltae_spc"/>
+						<taxon idref="poefor_spc"/>
+						<taxon idref="ptyoli_spc"/>
+						<taxon idref="sarloh_spc"/>
+						<taxon idref="tremar_spc"/>
+						<taxon idref="trenig_spc"/>
+						<taxon idref="tylpol_spc"/>
+						<taxon idref="xipmac_spc"/>
+					</taxonset>
+					<LogNormal name="distr" meanInRealSpace="true">
+						<parameter name="M">92.0</parameter>
+						<parameter name="S">0.05</parameter>
+					</LogNormal>
+				</distribution>
+				<distribution id="atherinomorphae_cichlomorphae.prior" spec="beast.math.distributions.MRCAPrior" tree="@tree.t:Species" monophyletic="true">
+					<taxonset id="atherinomorphae_cichlomorphae" spec="TaxonSet">
+						<taxon idref="orylat_spc"/>
+						<taxon idref="ampcit_spc"/>
+						<taxon idref="ampzal_spc"/>
+						<taxon idref="andbis_spc"/>
+						<taxon idref="andcoe_spc"/>
+						<taxon idref="apidip_spc"/>
+						<taxon idref="asplep_spc"/>
+						<taxon idref="astfla_spc"/>
+						<taxon idref="aussci_spc"/>
+						<taxon idref="bencon_spc"/>
+						<taxon idref="bujvit_spc"/>
+						<taxon idref="copbak_spc"/>
+						<taxon idref="copren_spc"/>
+						<taxon idref="cypvar_spc"/>
+						<taxon idref="etingu_spc"/>
+						<taxon idref="etrcan_spc"/>
+						<taxon idref="gobeth_spc"/>
+						<taxon idref="gralem_spc"/>
+						<taxon idref="hemelo_spc"/>
+						<taxon idref="hetbut_spc"/>
+						<taxon idref="hetmul_spc"/>
+						<taxon idref="krymar_spc"/>
+						<taxon idref="metzeb_spc"/>
+						<taxon idref="neobri_spc"/>
+						<taxon idref="neovar_spc"/>
+						<taxon idref="notfur_spc"/>
+						<taxon idref="oremal_spc"/>
+						<taxon idref="orenil_spc"/>
+						<taxon idref="oretan_spc"/>
+						<taxon idref="parpol_spc"/>
+						<taxon idref="peltae_spc"/>
+						<taxon idref="poefor_spc"/>
+						<taxon idref="ptyoli_spc"/>
+						<taxon idref="sarloh_spc"/>
+						<taxon idref="tremar_spc"/>
+						<taxon idref="trenig_spc"/>
+						<taxon idref="tylpol_spc"/>
+						<taxon idref="xipmac_spc"/>
+					</taxonset>
+					<LogNormal name="distr" meanInRealSpace="true">
+						<parameter name="M">87.5</parameter>
+						<parameter name="S">0.06</parameter>
+					</LogNormal>
+				</distribution>
+				<distribution id="atherinomorphae.prior" spec="beast.math.distributions.MRCAPrior" tree="@tree.t:Species" monophyletic="true">
+					<taxonset id="atherinomorphae" spec="TaxonSet">
+						<taxon idref="orylat_spc"/>
+						<taxon idref="krymar_spc"/>
+						<taxon idref="notfur_spc"/>
+						<taxon idref="poefor_spc"/>
+						<taxon idref="xipmac_spc"/>
+						<taxon idref="cypvar_spc"/>
+					</taxonset>
+					<LogNormal name="distr" meanInRealSpace="true">
+						<parameter name="M">74.9</parameter>
+						<parameter name="S">0.09</parameter>
+					</LogNormal>
+				</distribution>
+				<distribution id="cichlomorphae.prior" spec="beast.math.distributions.MRCAPrior" tree="@tree.t:Species" monophyletic="true">
+					<taxonset id="cichlomorphae" spec="TaxonSet">
+						<taxon idref="ampcit_spc"/>
+						<taxon idref="ampzal_spc"/>
+						<taxon idref="andbis_spc"/>
+						<taxon idref="andcoe_spc"/>
+						<taxon idref="apidip_spc"/>
+						<taxon idref="asplep_spc"/>
+						<taxon idref="astfla_spc"/>
+						<taxon idref="aussci_spc"/>
+						<taxon idref="bencon_spc"/>
+						<taxon idref="bujvit_spc"/>
+						<taxon idref="copbak_spc"/>
+						<taxon idref="copren_spc"/>
+						<taxon idref="etingu_spc"/>
+						<taxon idref="etrcan_spc"/>
+						<taxon idref="gobeth_spc"/>
+						<taxon idref="gralem_spc"/>
+						<taxon idref="hemelo_spc"/>
+						<taxon idref="hetbut_spc"/>
+						<taxon idref="hetmul_spc"/>
+						<taxon idref="metzeb_spc"/>
+						<taxon idref="neobri_spc"/>
+						<taxon idref="neovar_spc"/>
+						<taxon idref="oremal_spc"/>
+						<taxon idref="orenil_spc"/>
+						<taxon idref="oretan_spc"/>
+						<taxon idref="parpol_spc"/>
+						<taxon idref="peltae_spc"/>
+						<taxon idref="ptyoli_spc"/>
+						<taxon idref="sarloh_spc"/>
+						<taxon idref="tremar_spc"/>
+						<taxon idref="trenig_spc"/>
+						<taxon idref="tylpol_spc"/>
+					</taxonset>
+					<LogNormal name="distr" meanInRealSpace="true">
+						<parameter name="M">76.8</parameter>
+						<parameter name="S">0.07</parameter>
+					</LogNormal>
+				</distribution>
+				
