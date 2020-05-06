@@ -16,13 +16,13 @@ Scripts and data files in this directory enable the selection of query sequences
 
 Scripts and data files in this directory identify sets of orthologs in distantly related cichlid lineages and non-cichlid outgroups. Scripts are written to run on an SGE queuing system. File [`run_all.sh`](age_determination/ortholog_identification/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](age_determination/ortholog_identification/README) file in directory [`age_determination/ortholog_identification`](age_determination/ortholog_identification).
 
-## age_determination/phylogenetic_inference
-
-Scripts and data files in this directory perform phylogenetic analyses of distantly related cichlid lineages and non-cichlid outgroups, including time-calibrated analyses that allow the estimation of the age of the Lake Tanganyika cichlid radiation. Scripts are written to run on an SGE queuing system. File [`run_all.sh`](age_determination/phylogenetic_inference/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](age_determination/phylogenetic_inference/README) file in directory [`age_determination/phylogenetic_inference `](age_determination/phylogenetic_inference).
-
 ## age_determination/introgression_detection
 
-XXX TODO (cichlid_phylogenetics)
+Scripts and data files in this directory perform tests for introgression among distantly related cichlid lineages and non-cichlid outgroups. Scripts are written to run on an SGE queuing system. File [`run_all.sh`](age_determination/introgression_detection/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](age_determination/introgression_detection/README) file in directory [`age_determination/introgression_detection `](age_determination/introgression_detection).
+
+## age_determination/phylogenetic_inference
+
+Scripts and data files in this directory perform phylogenetic analyses of distantly related cichlid lineages and non-cichlid outgroups, including time-calibrated analyses that allow the estimation of the age of the Lake Tanganyika cichlid radiation. Scripts are written to run on an SGE queuing system. File [`run_all.sh`](age_determination/phylogenetic_inference/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](age_determination/phylogenetic_inference/README) file in directory [`age_determination/phylogenetic_inference`](age_determination/phylogenetic_inference).
 
 ## variant_calling
 

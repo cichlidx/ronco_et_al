@@ -11,7 +11,7 @@ Before running scripts in src:
 
 - All files ending matching *.atram.fasta in res/atram of the 'local_assembly' directory must be placed in data/subjects/local/atram.
 
-- Whole-genome assemblies generated with CeleraAssembler for the specimens listed in data/tables/cichlid_specimens.txt must be placed in data/subjects/local/celera.
+- Whole-genome assemblies generated with CeleraAssembler (see Supplementary Material for CeleraAssembler settings) for the specimens listed in data/tables/cichlid_specimens.txt must be placed in data/subjects/local/celera.
 
 - The program BMGE must be placed in bin and named BMGE.jar.
 
