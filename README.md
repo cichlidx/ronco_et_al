@@ -26,7 +26,7 @@ Scripts and data files in this directory perform phylogenetic analyses of distan
 
 ## variant_calling
 
-XXX TODO (sequencing)
+Scripts and data files in this directory perform mapping, variant calling, and phasing for genomes of species from the Lake Tanganyika cichlid radiation, plus a few outgroup species. Scripts are written to run on an SGE queuing system. File [`run_all.sh`](variant_calling/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](variant_calling/README) file in directory [`age_determination/phylogenetic_inference`](variant_calling).
 
 ## mitochondrial_phylogenetics
 
