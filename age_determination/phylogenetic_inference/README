@@ -11,4 +11,4 @@ Before running scripts in src:
 
 - The content of res/trees/nuclear in directory 'age_determination/ortholog_identification' must be copied to data/trees.
 
-- The program ASTRAL must be placed in bin/Astral and named astral.5.6.3.jar.
+- The program ASTRAL must be placed in bin/Astral and named astral.5.6.3.jar. If another version of Astral is used, run_astral.sh will need to be adjusted.

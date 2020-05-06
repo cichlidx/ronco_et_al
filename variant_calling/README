@@ -1,0 +1,20 @@
+# m_matschiner Wed May 6 16:26:34 CEST 2020
+
+Scripts and data files in this directory perform mapping, variant calling, and phasing for genomes of species from the Lake Tanganyika cichlid radiation, plus a few outgroup species. Scripts are written to run on an SGE queuing system. File src/run_all.sh specifies in which sequence scripts should be run (but run_all.sh itself should not be executed as it would trigger scripts before upstream scripts have completed).
+
+
+Before running scripts in src:
+
+- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep "module load" | sort | uniq'. Adjust module names as needed.
+
+- Fastq files for specimens listed in data/tables/mapping.txt must be placed in data/fastq/mapping.
+
+- The orenil2 reference genome must be downloaded, placed in data/reference, and named GCF_001858045.1_ASM185804v2_genomic.fna.
+
+- In files src/prepare.slurm, src/map.slurm, src/merge.slurm, and run_gatk2.slurm, PATH_TO_PICARD must be replaced with the path to picard.jar.
+
+- In file src/map.slurm, PATH_TO_TRIMMOMATIC must be replaced with the path to trimmomatic-0.36.jar.
+
+- In file src/map.slurm, src/merge.slurm, run_gatk1.slurm, run_gatk2.slurm, concatenate_vcfs_per_lg.slurm, and concatenate_all_vcfs.slurm, PATH_TO_GATK must be replaced with the path to GenomeAnalysisTK.jar (GATK v.3.7).
+
+- The program Beagle must be downloaded and placed in bin named beagle.27Jan18.7e1.jar. If a different version of Beagle is used, src/run_beagle1.slurm and src/run_beagle2.slurm will need to be adjusted.

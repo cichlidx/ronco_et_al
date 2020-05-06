@@ -6,7 +6,7 @@ Directories correspond to different types of analyses as described below.
 
 ## local_assembly
 
-Scripts and data files in this directory perform local assembly of candidate phylogenetic markers, using the programs aTRAM and Kollector. Scripts are written to run on an SGE queuing system; however, aTRAM databases were mostly prepared on a laptop computer with a solid-state drive because the hard disk drives of the SGE were found to write these databases orders of magnitudes slower. File [`run_all.sh`](local_assembly/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](local_assembly/README) file in directory [`local_assembly `](local_assembly).
+Scripts and data files in this directory perform local assembly of candidate phylogenetic markers, using the programs aTRAM and Kollector. Scripts are written to run on an SGE queuing system; however, aTRAM databases were mostly prepared on a laptop computer with a solid-state drive because the hard disk drives of the SGE were found to write these databases orders of magnitudes slower. File [`run_all.sh`](local_assembly/src/run_all.sh) specifies in which sequence scripts should be run (but `run_all.sh` itself should not be executed as it would trigger scripts before upstream scripts have completed). Required preparatory steps are listed in the [`README`](local_assembly/README) file in directory [`local_assembly`](local_assembly).
 
 ## age_determination/nuclear_queries_selection
 

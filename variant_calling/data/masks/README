@@ -1,0 +1,6 @@
+The mappability masks were generated using Heng Li's SNPable tools, with k=100bp (for 100bp reads):
+http://lh3lh3.users.sourceforge.net/snpable.shtml
+Simply put - the masks show regions where we are not able to confidently call SNPs using short 100bp reads, because the reads could map to multiple places
+This folder containst masks with four levels of stringency:
+mapability_mask_100_90.bed - fewer than 90% of overlapping 100bp sequences could be matched back uniquely and without 1-difference (265Mbp)
+mapability_mask_100_95.bed - fewer than 95% of overlapping 100bp sequences could be matched back uniquely and without 1-difference (286Mbp)
