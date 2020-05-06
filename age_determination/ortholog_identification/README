@@ -1,0 +1,20 @@
+# m_matschiner Wed May 6 11:26:55 CEST 2020
+
+Scripts and data files in this directory identify sets of orthologs in distantly related cichlid lineages and non-cichlid outgroups. Scripts are written to run on an SGE queuing system. File src/run_all.sh specifies in which sequence scripts should be run (but run_all.sh itself should not be executed as it would trigger scripts before upstream scripts have completed).
+
+
+Before running scripts in src:
+
+- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep "module load" | sort | uniq'. Adjust module names as needed.
+
+- All files ending matching *.kollector.fasta in res/kollector of the 'local_assembly' directory must be placed in data/subjects/local/kollector.
+
+- All files ending matching *.atram.fasta in res/atram of the 'local_assembly' directory must be placed in data/subjects/local/atram.
+
+- Whole-genome assemblies generated with CeleraAssembler for the specimens listed in data/tables/cichlid_specimens.txt must be placed in data/subjects/local/celera.
+
+- The program BMGE must be placed in bin and named BMGE.jar.
+
+- Version 7.2.8 of RAxML must be placed in bin and named raxmlHPC.
+
+- Code for the program concaterpillar must be placed in bin/concaterpillar.

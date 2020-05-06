@@ -1,0 +1,14 @@
+id links
+orylat ftp://ftp.ensembl.org/pub/release-94/fasta/oryzias_latipes_hsok/dna/Oryzias_latipes_hsok.ASM223469v1.dna.toplevel.fa.gz
+krymar ftp://ftp.ensembl.org/pub/release-94/fasta/kryptolebias_marmoratus/dna/Kryptolebias_marmoratus.ASM164957v1.dna.toplevel.fa.gz
+cypvar ftp://ftp.ensembl.org/pub/release-94/fasta/cyprinodon_variegatus/dna/Cyprinodon_variegatus.C_variegatus-1.0.dna.toplevel.fa.gz
+funhet ftp://ftp.ensembl.org/pub/release-94/fasta/fundulus_heteroclitus/dna/Fundulus_heteroclitus.Fundulus_heteroclitus-3.0.2.dna.toplevel.fa.gz
+notfur http://www.ebi.ac.uk/ena/data/view/LN609377&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609378&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609379&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609380&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609381&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609382&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609383&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609384&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609385&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609386&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609387&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609388&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609389&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609390&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609391&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609392&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609393&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609394&display=fasta http://www.ebi.ac.uk/ena/data/view/LN609395&display=fasta
+poefor ftp://ftp.ensembl.org/pub/release-94/fasta/poecilia_formosa/dna/Poecilia_formosa.PoeFor_5.1.2.dna.toplevel.fa.gz
+xipmac ftp://ftp.ensembl.org/pub/release-94/fasta/xiphophorus_maculatus/dna/Xiphophorus_maculatus.X_maculatus-5.0-male.dna.toplevel.fa.gz
+parpar https://datadryad.org/bitstream/handle/10255/dryad.121146/fish_88.scf.fasta.gz
+ampcit ftp://ftp.ensembl.org/pub/release-94/fasta/amphilophus_citrinellus/dna/Amphilophus_citrinellus.Midas_v5.dna.toplevel.fa.gz
+orenil ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/MK/QE/MKQE02/MKQE02.1.fsa_nt.gz ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/MK/QE/MKQE02/MKQE02.2.fsa_nt.gz
+metzeb ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/AG/TA/AGTA05/AGTA05.1.fsa_nt.gz ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/AG/TA/AGTA05/AGTA05.2.fsa_nt.gz
+andcoe http://cichlid.gurdon.cam.ac.uk/Andinoacara_coeruleopunctatus_final_min1000bp_scaffolds.fa.gz
+neobri ftp://ftp.ensembl.org/pub/release-94/fasta/neolamprologus_brichardi/dna/Neolamprologus_brichardi.NeoBri1.0.dna.toplevel.fa.gz

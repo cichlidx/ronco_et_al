@@ -1,0 +1,104 @@
+				<distribution id="totalgroup.prior" spec="beast.math.distributions.MRCAPrior" tree="@tree.t:Species" monophyletic="true">
+					<taxonset id="totalgroup" spec="TaxonSet">
+						<taxon idref="orylat"/>
+						<taxon idref="krymar"/>
+						<taxon idref="cypvar"/>
+						<taxon idref="funhet"/>
+						<taxon idref="notfur"/>
+						<taxon idref="poefor"/>
+						<taxon idref="xipmac"/>
+						<taxon idref="parpar"/>
+						<taxon idref="ampcit"/>
+						<taxon idref="orenil"/>
+						<taxon idref="metzeb"/>
+						<taxon idref="andcoe"/>
+						<taxon idref="neobri"/>
+						<taxon idref="etrcan"/>
+						<taxon idref="ptyoli"/>
+						<taxon idref="parpol"/>
+						<taxon idref="andbis"/>
+						<taxon idref="bujvit"/>
+						<taxon idref="ampzal"/>
+						<taxon idref="aussci"/>
+						<taxon idref="apidip"/>
+						<taxon idref="hetmul"/>
+						<taxon idref="tylpol"/>
+						<taxon idref="bencon"/>
+						<taxon idref="peltae"/>
+						<taxon idref="hemelo"/>
+						<taxon idref="etingu"/>
+						<taxon idref="oretan"/>
+						<taxon idref="oremal"/>
+						<taxon idref="sarloh"/>
+						<taxon idref="tilspa"/>
+						<taxon idref="stespu"/>
+						<taxon idref="gobeth"/>
+						<taxon idref="tilbre"/>
+						<taxon idref="pelmar"/>
+						<taxon idref="hetbut"/>
+						<taxon idref="copbak"/>
+						<taxon idref="copren"/>
+						<taxon idref="tremar"/>
+						<taxon idref="trenig"/>
+						<taxon idref="asplep"/>
+						<taxon idref="gralem"/>
+						<taxon idref="neovar"/>
+						<taxon idref="astfla"/>
+					</taxonset>
+					<LogNormal name="distr" meanInRealSpace="true">
+					    <parameter name="M">100.0</parameter>
+					    <parameter name="S">0.1</parameter>
+					</LogNormal>
+				</distribution>
+				<distribution id="refgroup.prior" spec="beast.math.distributions.MRCAPrior" tree="@tree.t:Species" monophyletic="true">
+					<taxonset id="refgroup" spec="TaxonSet">
+						<taxon idref="orylat"/>
+						<taxon idref="krymar"/>
+						<taxon idref="cypvar"/>
+						<taxon idref="funhet"/>
+						<taxon idref="notfur"/>
+						<taxon idref="poefor"/>
+						<taxon idref="xipmac"/>
+					</taxonset>
+				</distribution>
+				<distribution id="ingroup.prior" spec="beast.math.distributions.MRCAPrior" tree="@tree.t:Species" monophyletic="true">
+					<taxonset id="ingroup" spec="TaxonSet">
+						<taxon idref="ampcit"/>
+						<taxon idref="orenil"/>
+						<taxon idref="metzeb"/>
+						<taxon idref="andcoe"/>
+						<taxon idref="neobri"/>
+						<taxon idref="etrcan"/>
+						<taxon idref="ptyoli"/>
+						<taxon idref="parpol"/>
+						<taxon idref="andbis"/>
+						<taxon idref="bujvit"/>
+						<taxon idref="ampzal"/>
+						<taxon idref="aussci"/>
+						<taxon idref="apidip"/>
+						<taxon idref="hetmul"/>
+						<taxon idref="tylpol"/>
+						<taxon idref="bencon"/>
+						<taxon idref="peltae"/>
+						<taxon idref="hemelo"/>
+						<taxon idref="etingu"/>
+						<taxon idref="oretan"/>
+						<taxon idref="oremal"/>
+						<taxon idref="sarloh"/>
+						<taxon idref="tilspa"/>
+						<taxon idref="stespu"/>
+						<taxon idref="gobeth"/>
+						<taxon idref="tilbre"/>
+						<taxon idref="pelmar"/>
+						<taxon idref="hetbut"/>
+						<taxon idref="copbak"/>
+						<taxon idref="copren"/>
+						<taxon idref="tremar"/>
+						<taxon idref="trenig"/>
+						<taxon idref="asplep"/>
+						<taxon idref="gralem"/>
+						<taxon idref="neovar"/>
+						<taxon idref="astfla"/>
+					</taxonset>
+				</distribution>
+				
