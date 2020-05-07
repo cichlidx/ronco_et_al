@@ -1,0 +1,5 @@
+normal(0,4.67,0.18)	crown	Astbur,Arcstr,Hplvan,Hplkil,Astfla,Astpal,HplspC,Hplsta,Ctepol,Sermac
+monophyletic	NA	Astbur,Arcstr,Hplvan,Hplkil,Astfla,Astpal,HplspC,Hplsta
+monophyletic	NA	Ctepol,Sermac
+monophyletic	NA	Astbur,Arcstr,Hplvan,Hplkil,Astfla,Astpal,HplspC,Hplsta,Ctepol,Sermac
+monophyletic	NA	Ortred,Ortuvi

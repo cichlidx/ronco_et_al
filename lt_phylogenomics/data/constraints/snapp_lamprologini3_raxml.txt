@@ -1,0 +1,3 @@
+normal(0,1.833,0.104)	crown	Neolon,Neonve,Neopec,Neobue,Neoobs,Neopro,Neomux,Neobif,Neocyl,Neoleu,NeoleL,Neotim,Neofur,NeofuU,Chacya,Julunt,Julmrk,Julreg,JulreK,JulmaN,JulmaS,Chapop,Jultra,Julorn,Julkom,Chabri,Chando,Chabif,Juldic
+monophyletic	NA	Neolon,Neonve,Neopec
+monophyletic	NA	Neobue,Neoobs,Neopro,Neomux,Neobif,Neocyl,Neoleu,NeoleL,Neotim,Neofur,NeofuU,Chacya,Julunt,Julmrk,Julreg,JulreK,JulmaN,JulmaS,Chapop,Jultra,Julorn,Julkom,Chabri,Chando,Chabif,Juldic

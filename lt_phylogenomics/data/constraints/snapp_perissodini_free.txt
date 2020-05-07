@@ -1,0 +1,3 @@
+normal(0,1.308,0.107)	crown	Plestr,Permic,Hapmic,Plepar,Plemul,Perecc,Xchhec,Pleela
+monophyletic	NA	Plestr,Permic,Hapmic,Plepar
+monophyletic	NA	Plemul,Perecc,Xchhec,Pleela

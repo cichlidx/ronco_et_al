@@ -1,0 +1,3 @@
+normal(0,2.376,0.123)	crown	Neofal,Neochi,Neowal,Neocyg,Neogra,Neosav,NeofaM,NeogrM,Neomar,Neocra,Neobri,Neospl,Neohel,Neokom,Neopul,Neooli
+monophyletic	NA	Neofal,Neochi,Neowal
+monophyletic	NA	Neocyg,Neogra,Neosav,NeofaM,NeogrM,Neomar,Neocra,Neobri,Neospl,Neohel,Neokom,Neopul,Neooli

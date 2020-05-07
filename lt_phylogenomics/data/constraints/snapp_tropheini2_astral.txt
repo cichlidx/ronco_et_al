@@ -1,0 +1,5 @@
+normal(0,2.49,0.17)	crown	Trodub,Troann,Tropol,Trompi,Trored,Tromoo,Tromor,Tronig,Trokir,Trolun,Troluk,Trobri,TrobrK
+monophyletic	NA	Trodub
+monophyletic	NA	Troann,Tropol,Trompi,Trored,Tromoo,Tromor,Tronig,Trokir,Trolun,Troluk,Trobri,TrobrK
+monophyletic	NA	Trodub,Troann,Tropol,Trompi,Trored,Tromoo,Tromor,Tronig,Trokir,Trolun,Troluk,Trobri,TrobrK
+monophyletic	NA	Loblab,Pettre

@@ -1,0 +1,5 @@
+normal(0,1.428,0.100)	crown	NeoveS,NeoveB,LamorC,Lamorn,LamorS,Lamkun,Lamsig,Neolap
+monophyletic	NA	NeoveS,NeoveB
+monophyletic	NA	LamorC,Lamorn,LamorS,Lamkun,Lamsig,Neolap
+monophyletic	NA	NeoveS,NeoveB,LamorC,Lamorn,LamorS,Lamkun,Lamsig,Neolap
+monophyletic	NA	Neomul,Neosim

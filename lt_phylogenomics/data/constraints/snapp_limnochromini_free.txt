@@ -1,0 +1,1 @@
+normal(0,3.726,0.200)	crown	Trioto,Tchdha,Regcal,Baicen,Lchaur,Gnaper,Gwcabe,Gwcsta,Gwcbel,Gwcchr

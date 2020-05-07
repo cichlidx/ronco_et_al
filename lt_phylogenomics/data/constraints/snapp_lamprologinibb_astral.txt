@@ -1,0 +1,3 @@
+normal(0,4.35,0.19)	crown	NeobrM,Neocal,Neobre,Lamcal,Altfas,Neocau,Neolou,NeocaK,Neomul,Neosim,NeoveB,Lamorn,Neovar,Neople,Varmoo,Neotoa,Neotre,Neosex,Neofal,Neogra,Lepcun,TeldhT,Neonig,Neopec,Julunt
+monophyletic	NA	NeobrM,Neocal,Neobre,Lamcal,Altfas,Neocau,Neolou,NeocaK,Neomul,Neosim,NeoveB,Lamorn,Neovar,Neople
+monophyletic	NA	Varmoo,Neotoa,Neotre,Neosex,Neofal,Neogra,Lepcun,TeldhT,Neonig,Neopec,Julunt

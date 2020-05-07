@@ -1,0 +1,3 @@
+normal(0,9.7,0.3)	crown	HemstZ,Batfas,BenhoM,Benmel,Boumic,Cphfr5,Cteben,Pcytem,Cypcol,Xenfla,Gralem,Erecya,Eremar,Ortcho,Ortuvi,Troann,Pettre,Sermac,Astbur,Julunt,Neovar,Gwcsta,Tchdha,Plestr,Plemul,Tremar,Treuni
+monophyletic	NA	BenhoM,Benmel,Cphfr5,Cteben,Pcytem,Cypcol,Xenfla,Gralem,Erecya,Eremar,Ortcho,Ortuvi,Troann,Pettre,Sermac,Astbur,Julunt,Neovar,Gwcsta,Tchdha,Plestr,Plemul
+monophyletic	NA	Boumic,Batfas,HemstZ,Tremar,Treuni

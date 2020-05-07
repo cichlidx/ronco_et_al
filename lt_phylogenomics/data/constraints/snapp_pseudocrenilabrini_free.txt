@@ -1,0 +1,5 @@
+normal(0,4.72,0.19)	crown	Ortcho,Psephi,Astbur,Arcstr
+monophyletic	NA	Ortcho,Psephi
+monophyletic	NA	Astbur,Arcstr
+monophyletic	NA	Ortcho,Psephi,Astbur,Arcstr
+monophyletic	NA	Ortred,Ortuvi

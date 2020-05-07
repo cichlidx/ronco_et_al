@@ -1,0 +1,3 @@
+normal(0,1.123,0.084)	crown	Erecya,Tanirs,Eremar,Spaery,Spamar
+monophyletic	NA	Erecya,Tanirs
+monophyletic	NA	Eremar,Spaery,Spamar

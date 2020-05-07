@@ -1,0 +1,3 @@
+normal(0,2.102,0.115)	crown	Xencau,Xenlon,Xenorn,XenniS,Xennas,Asplep,Xensun,XenpaK,Xenpap,Mdcrot,Xenspi,XenspN,Mdcten,Xenfla,Xenbou,Xenbat,Xensim,Enamel,Xensin,Xenkil,Xenoch
+monophyletic	NA	Xencau
+monophyletic	NA	Xenlon,Xenorn,XenniS,Xennas,Asplep,Xensun,XenpaK,Xenpap,Mdcrot,Xenspi,XenspN,Mdcten,Xenfla,Xenbou,Xenbat,Xensim,Enamel,Xensin,Xenkil,Xenoch

@@ -1,0 +1,5 @@
+normal(0,3.02,0.18)	crown	Trodub,Troann,Loblab,Pettre
+monophyletic	NA	Trodub,Troann
+monophyletic	NA	Loblab,Pettre
+monophyletic	NA	Arcstr,Astbur
+monophyletic	NA	Trodub,Troann,Loblab,Pettre

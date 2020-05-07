@@ -1,0 +1,3 @@
+normal(0,0.663,0.043)	crown	Carsch,Ectdes,EctspN,Lesper,Lessta,Auldew,Cunlon,Cyafur,Cyafoa,Ophnas,Ophpar,Ophboo,Ophhet,Ophven,Ophwhi
+monophyletic	NA	Carsch,Ectdes,EctspN,Lesper,Lessta
+monophyletic	NA	Auldew,Cunlon,Cyafur,Cyafoa,Ophnas,Ophpar,Ophboo,Ophhet,Ophven,Ophwhi

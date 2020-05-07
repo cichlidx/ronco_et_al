@@ -1,0 +1,5 @@
+normal(0,4.64,0.18)	crown	Ctepol,Thobra,Sermac,Sarcar,Phaacu,Astbur,Arcstr
+monophyletic	NA	Ctepol,Thobra,Sermac,Sarcar,Phaacu
+monophyletic	NA	Astbur,Arcstr
+monophyletic	NA	Ctepol,Thobra,Sermac,Sarcar,Phaacu,Astbur,Arcstr
+monophyletic	NA	Ortred,Ortuvi

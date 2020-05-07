@@ -1,0 +1,5 @@
+normal(0,2.66,0.16)	crown	Loblab,Pettre,Petred,Pethor,Petkip,Petmac,Peteph,Petmos,Petkas,Petrai,Petgia,Petpol,Pettex,Simdia,Petort,Petiko,Petfas,Intloo,Petfam,Limdar,Gnapfe,Ctehor,Psccur,Simmar,Simmrg,Simple,Simbab
+monophyletic	NA	Loblab
+monophyletic	NA	Pettre,Petred,Pethor,Petkip,Petmac,Peteph,Petmos,Petkas,Petrai,Petgia,Petpol,Pettex,Simdia,Petort,Petiko,Petfas,Intloo,Petfam,Limdar,Gnapfe,Ctehor,Psccur,Simmar,Simmrg,Simple,Simbab
+monophyletic	NA	Loblab,Pettre,Petred,Pethor,Petkip,Petmac,Peteph,Petmos,Petkas,Petrai,Petgia,Petpol,Pettex,Simdia,Petort,Petiko,Petfas,Intloo,Petfam,Limdar,Gnapfe,Ctehor,Psccur,Simmar,Simmrg,Simple,Simbab
+monophyletic	NA	Troann,Trodub

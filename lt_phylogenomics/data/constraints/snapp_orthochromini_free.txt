@@ -1,0 +1,5 @@
+normal(0,5.84,0.22)	crown	Ortuvi,Ortmaz,Ortred,Astbur,Ctepol
+monophyletic	NA	Ortuvi,Ortmaz,Ortred
+monophyletic	NA	Astbur,Ctepol
+monophyletic	NA	Ortuvi,Ortmaz,Ortred,Astbur,Ctepol
+monophyletic	NA	Erecya,Eremar

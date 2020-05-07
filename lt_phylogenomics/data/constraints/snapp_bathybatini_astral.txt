@@ -1,0 +1,3 @@
+normal(0,4.988,0.230)	crown	Hemste,HemstZ,Batmin,Batgra,Batleo,Batvit,Batfas,Batfer,Bathor
+monophyletic	NA	Hemste,HemstZ
+monophyletic	NA	Batmin,Batgra,Batleo,Batvit,Batfas,Batfer,Bathor

@@ -1,0 +1,20 @@
+# m_matschiner Wed May 6 16:26:34 CEST 2020
+
+Scripts and data files in this directory perform various methods for phylogenetic inference for species from the Lake Tanganyika cichlid radiation, plus a few outgroup species. Scripts are written to run on an SGE queuing system. File src/run_all.sh specifies in which sequence scripts should be run (but run_all.sh itself should not be executed as it would trigger scripts before upstream scripts have completed).
+
+
+Before running scripts in src:
+
+- A number of programs must be available as modules. To see which program versions are required, and how modules should be named, use 'cat src/* | grep -v "#" | grep "module load" | sort | uniq'. Adjust module names as needed.
+
+- All mask files in compressed bed format, named *.{strict,permissive}.merged.bed.gz, must be copied from res/gatk in the 'variant_calling' directory to data/masks.
+
+- The phased vcf files strict.phased.vcf.gz and permissive.phased.vcf.gz must be copied from res/beagle in the 'variant_calling' directory to data/vcf.
+
+- The DendroPy package for Python 2 must be installed so that sumtrees.py is available from the command line.
+
+- The program BMGE must be placed in bin and named BMGE.jar.
+
+- The edited version of the orenil2 reference genome (GCF_001858045.1_ASM185804v2_genomic_edit.fna; see directory 'variant_calling') must be placed in data/reference and renamed to orenil2.fasta.
+
+- The program ASTRAL must be placed in bin/Astral and named astral.5.6.3.jar. If another version of Astral is used, run_astral.sh will need to be adjusted.

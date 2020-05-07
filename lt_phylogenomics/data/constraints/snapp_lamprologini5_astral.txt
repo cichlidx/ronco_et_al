@@ -1,0 +1,5 @@
+normal(0,2.446,0.131)	crown	Neotet,Lepcun,Lamtig,Neomod,Neopet,Neomon,Neochr,Neoese,Telvit,Tellon,Telbif,Telbri,Telbra,Telshe,TelteS,TeldhN,Neodev,TeldhT,Telluf,TeldhS
+monophyletic	NA	Neotet,Lepcun,Lamtig,Neomod,Neopet,Neomon,Neochr,Neoese
+monophyletic	NA	Telvit,Tellon,Telbif,Telbri,Telbra,Telshe,TelteS,TeldhN,Neodev,TeldhT,Telluf,TeldhS
+monophyletic	NA	Neotet,Lepcun,Lamtig,Neomod,Neopet,Neomon,Neochr,Neoese,Telvit,Tellon,Telbif,Telbri,Telbra,Telshe,TelteS,TeldhN,Neodev,TeldhT,Telluf,TeldhS
+monophyletic	NA	Julunt,Neopec,Neonig

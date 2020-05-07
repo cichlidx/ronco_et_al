@@ -1,0 +1,5 @@
+normal(0,3.432,0.174)	crown	Treuni,Trezeb,Tremac,Trecap,Tremar,Trenig,Tresti
+monophyletic	NA	Treuni
+monophyletic	NA	Trezeb,Tremac,Trecap,Tremar,Trenig,Tresti
+monophyletic	NA	Treuni,Trezeb,Tremac,Trecap,Tremar,Trenig,Tresti
+monophyletic	NA	HemstZ,Batfas

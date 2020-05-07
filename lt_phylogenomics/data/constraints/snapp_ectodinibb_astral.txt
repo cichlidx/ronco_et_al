@@ -1,0 +1,5 @@
+normal(0,4.30,0.19)	crown	Gralem,Calple,Calmac,Calmel,Carsch,Ophpar,Xencau,Xenfla
+monophyletic	NA	Gralem
+monophyletic	NA	Calple,Calmac,Calmel,Carsch,Ophpar,Xencau,Xenfla
+monophyletic	NA	Gwcsta,Tchdha
+monophyletic	NA	Calple,Calmac,Calmel,Carsch,Ophpar,Xencau,Xenfla,Gralem

@@ -1,0 +1,3 @@
+normal(0,3.721,0.196)	crown	Trioto,Tchdha,Regcal,Baicen,Lchaur,Gnaper,Gwcabe,Gwcsta,Gwcbel,Gwcchr
+monophyletic	NA	Trioto,Tchdha,Regcal,Baicen
+monophyletic	NA	Lchaur,Gnaper,Gwcabe,Gwcsta,Gwcbel,Gwcchr

@@ -1,0 +1,3 @@
+normal(0,0.268,0.047)	crown	Benmel,Bentri,Benhor,BenhoM
+monophyletic	NA	Benmel,Bentri
+monophyletic	NA	Benhor,BenhoM
