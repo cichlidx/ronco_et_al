@@ -188,13 +188,14 @@ import os
 # Get the command line arguments.
 tree_file_name = sys.argv[1]
 species_table_file_name = sys.argv[2]
-within_tribe_migration_string = sys.argv[3]
+migration_matrix_string = sys.argv[3]
 vcf_outfile_name = sys.argv[4]
+migration_setting = sys.argv[5]
 
 # Set simulation parameters.
 pop_size = 20000
 generation_time = 3
-#within_tribe_migration = 1e-5
+migration_scaling = 5.0e-6
 between_tribe_migration = 0
 mut_rate = 3.5e-9
 chr_length = 100000
@@ -228,14 +229,15 @@ parsed_tuple = parse_species_tree(
 population_configurations = parsed_tuple[0]
 demographic_events = parsed_tuple[1]
 for n in population_configurations:
+    # n.sample_size = 4
     n.sample_size = 2
 
 # Check if the specified migration rate string is a number or a file name.
 print('Preparing the migration matrix...', end='', flush=True)
-if os.path.isfile(within_tribe_migration_string):
+if os.path.isfile(migration_matrix_string):
     within_tribe_migrations = []
     # Read the migration rate matrix.
-    with open(within_tribe_migration_string) as f:
+    with open(migration_matrix_string) as f:
         dsuite_file_lines = f.readlines()
         dsuite_file_species_ids = dsuite_file_lines[0].split()
         migration_matrix = []
@@ -254,23 +256,38 @@ if os.path.isfile(within_tribe_migration_string):
                 else:
                     dsuite_species2_index = None
                 tribe2 = table_tribe_ids[species2_index]
-                if species1 == species2:
-                    row.append(0)
-                elif tribe1 == tribe2:
-                    if dsuite_species1_index is None or dsuite_species2_index is None:
+                if migration_setting == "within_only":
+                    if species1 == species2:
+                        row.append(0)
+                    elif tribe1 == tribe2:
+                        if dsuite_species1_index is None or dsuite_species2_index is None:
+                            row.append(0)
+                        else:
+                            row_list = dsuite_file_lines[dsuite_species1_index+1].split()
+                            within_tribe_migration = float(row_list[dsuite_species2_index+1]) * migration_scaling
+                            row.append(within_tribe_migration)
+                            within_tribe_migrations.append(within_tribe_migration)
+                    else:
+                        row.append(between_tribe_migration)
+                elif migration_setting == "within_and_between":
+                    if species1 == species2:
                         row.append(0)
                     else:
-                        row_list = dsuite_file_lines[dsuite_species1_index+1].split()
-                        within_tribe_migration = float(row_list[dsuite_species2_index+1]) * 1E-5
-                        row.append(within_tribe_migration)
-                        within_tribe_migrations.append(within_tribe_migration)
+                        if dsuite_species1_index is None or dsuite_species2_index is None:
+                            row.append(0)
+                        else:
+                            row_list = dsuite_file_lines[dsuite_species1_index+1].split()
+                            within_tribe_migration = float(row_list[dsuite_species2_index+1]) * migration_scaling
+                            row.append(within_tribe_migration)
+                            within_tribe_migrations.append(within_tribe_migration)
                 else:
-                    row.append(between_tribe_migration)
+                    print("ERROR: Unknown migration_setting: " + migration_setting + "!")
+                    sys.exit(0)
             migration_matrix.append(row)
     print(" done. Mean within-tribe migration rate is " + str(sum(within_tribe_migrations)/len(within_tribe_migrations)) + ".")
 else:
     # For each pair of species, set the pairwise migration rate, unless a migration matrix has already been provided.
-    within_tribe_migration = float(within_tribe_migration_string)
+    within_tribe_migration = float(migration_matrix_string)
     migration_matrix = []
     for species1 in species_ids:
         row = []
@@ -312,6 +329,7 @@ vcf_string += '##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n'
 vcf_string += '#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT'
 for sp in range(0,len(species_ids)):
     vcf_string += '\t{}'.format(species_ids[sp])
+    # vcf_string += '\t{}_1\t{}_2'.format(species_ids[sp], species_ids[sp])
 vcf_string += '\n'
 
 # Prepare vcf file.
@@ -331,6 +349,7 @@ for variant in new_tree_sequence_obj.variants():
         vcf_string += '1\t{}\t.\t{}\t{}\t.\t.\t.\tGT'.format(vp,ancestralBase,derivedBase)
         for sp in range(0,len(species_ids)):
             vcf_string += '\t{}|{}'.format(variant.genotypes[2*sp],variant.genotypes[(2*sp)+1])
+            # vcf_string += '\t{}|{}'.format(variant.genotypes[(2*sp)+2],variant.genotypes[(2*sp)+3])
         vcf_string += '\n'
 
 # Write the vcf output file.
